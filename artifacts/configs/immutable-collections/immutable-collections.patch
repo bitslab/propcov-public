@@ -1,0 +1,283 @@
+diff --git a/pom.xml b/pom.xml
+index 98fb11b..92f9fc1 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -19,22 +19,27 @@
+         <plugins>
+             <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+-                <artifactId>maven-compiler-plugin</artifactId>
+-                <version>3.8.1</version>
++                <artifactId>maven-surefire-plugin</artifactId>
++                <version>2.22.2</version>
+             </plugin>
+             <plugin>
+-                <groupId>org.pitest</groupId>
+-                <artifactId>pitest-maven</artifactId>
+-                <version>1.5.2</version>
+-                <configuration>
+-                    <targetClasses>
+-                        <param>se.plilja.imcollect*</param>
+-                    </targetClasses>
+-                    <targetTests>
+-                        <param>se.plilja.imcollect*</param>
+-                    </targetTests>
+-                </configuration>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-compiler-plugin</artifactId>
++                <version>3.8.1</version>
+             </plugin>
++            <!-- <plugin>                                           -->
++            <!--     <groupId>org.pitest</groupId>                  -->
++            <!--     <artifactId>pitest-maven</artifactId>          -->
++            <!--     <version>1.5.2</version>                       -->
++            <!--     <configuration>                                -->
++            <!--         <targetClasses>                            -->
++            <!--             <param>se.plilja.imcollect*</param>    -->
++            <!--         </targetClasses>                           -->
++            <!--         <targetTests>                              -->
++            <!--             <param>se.plilja.imcollect*</param>    -->
++            <!--         </targetTests>                             -->
++            <!--     </configuration>                               -->
++            <!-- </plugin>                                          -->
+             <plugin>
+                 <inherited>true</inherited>
+                 <groupId>org.apache.maven.plugins</groupId>
+@@ -57,6 +62,65 @@
+                     </execution>
+                 </executions>
+             </plugin>
++            <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-assembly-plugin</artifactId>
++                <version>3.3.0</version>
++
++                <configuration>
++                    <descriptorRefs>
++                        <descriptorRef>jar-with-dependencies</descriptorRef>
++                    </descriptorRefs>
++                </configuration>
++
++                <executions>
++
++                    <execution>
++                        <id>make-assembly</id>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>single</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 2. Using maven assembly to compile the test jar -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <executions>
++                    <execution>
++                        <goals>
++                            <goal>test-jar</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 3. Jar instrumentation for jacoco -->
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <version>0.8.6</version>
++                <executions>
++                    <execution>
++                        <id>default-prepare-agent</id>
++                        <goals>
++                            <goal>prepare-agent</goal>
++                        </goals>
++                    </execution>
++                    <execution>
++                        <id>jacoco-report</id>
++                        <phase>test</phase>
++                        <goals>
++                            <goal>report</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
+         </plugins>
+     </build>
+
+@@ -88,4 +152,21 @@
+
+     </dependencies>
+
+-</project>
+\ No newline at end of file
++  <reporting>
++    <plugins>
++            <!-- 4. Reporting for jacoco -->
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <reportSets>
++                    <reportSet>
++                        <reports>
++                            <report>report</report>
++                        </reports>
++                    </reportSet>
++                </reportSets>
++            </plugin>
++    </plugins>
++  </reporting>
++
++</project>
+diff --git a/src/main/java/module-info.java b/src/main/java/module-info.java
+index abaa8b1..7d81919 100644
+--- a/src/main/java/module-info.java
++++ b/src/main/java/module-info.java
+@@ -1,3 +1,4 @@
+ module se.plilja.imcollect {
+     exports se.plilja.imcollect;
++    exports se.plilja.imcollect.internal;
+ }
+\ No newline at end of file
+diff --git a/src/test/java/se/plilja/imcollect/internal/WeightBalancedTreeSetTest.java b/src/test/java/se/plilja/imcollect/internal/WeightBalancedTreeSetTest.java
+index ef0fd98..4bbc449 100644
+--- a/src/test/java/se/plilja/imcollect/internal/WeightBalancedTreeSetTest.java
++++ b/src/test/java/se/plilja/imcollect/internal/WeightBalancedTreeSetTest.java
+@@ -31,4 +31,53 @@ public class WeightBalancedTreeSetTest extends CollectionsBaseTest {
+         assertEquals(uniqueValues.size(), target.size());
+     }
+
++    @Property
++    public void removeExistingElementShouldDecreaseSize(List<@InRange(minInt = -10, maxInt = 10) Integer> baseCollection, int newValue) {
++        super.removeExistingElementShouldDecreaseSize(baseCollection, newValue);
++    }
++
++    @Property
++    public void removeExistingElementShouldDecreaseSize1(List<@InRange(minInt = -10, maxInt = 10) Integer> values) {
++        super.removeExistingElementShouldDecreaseSize(values);
++    }
++
++    @Property
++    public void removeAllShouldRemoveAllElements(List<@InRange(minInt = -10, maxInt = 10) Integer> base, List<@InRange(minInt = -10, maxInt = 10) Integer> toRemove) {
++        super.removeAllShouldRemoveAllElements(base, toRemove);
++    }
++
++    @Property
++    public void removeNonExistingElementShouldNotChangeSize(List<@InRange(minInt = -10, maxInt = 10) Integer> base, @InRange(minInt = -10, maxInt = 10) int toRemove) {
++        super.removeNonExistingElementShouldNotChangeSize(base, toRemove);
++    }
++
++    @Property
++    public void anAddedValueShouldBePresentInCollection(List<@InRange(minInt = -10, maxInt = 10) Integer> base, int newValue) {
++        super.anAddedValueShouldBePresentInCollection(base, newValue);
++    }
++
++    @Property
++    public void allAddedValueShouldBePresentInCollection(List<@InRange(minInt = -10, maxInt = 10) Integer> base, List<@InRange(minInt = -10, maxInt = 10) Integer> newValues) {
++        super.allAddedValueShouldBePresentInCollection(base, newValues);
++    }
++
++    @Property
++    public void emptyShouldAlwaysBeFalseAfterAdd(int newValue) {
++        super.emptyShouldAlwaysBeFalseAfterAdd(newValue);
++    }
++
++    @Property
++    public void retainAll(List<@InRange(minInt = -10, maxInt = 10) Integer> base, List<@InRange(minInt = -10, maxInt = 10) Integer> retainValues) {
++        super.retainAll(base, retainValues);
++    }
++
++    @Property
++    public void nullShouldNeverBePresent(List<Integer> base) {
++        super.nullShouldNeverBePresent(base);
++    }
++
++    @Property
++    public void removingNullShouldReturnTheExactSameInstance(List<Integer> base) {
++        super.removingNullShouldReturnTheExactSameInstance(base);
++    }
+ }
+\ No newline at end of file
+diff --git a/src/test/java/se/plilja/imcollect/internal/fingertrees/FingerTreeTest.java b/src/test/java/se/plilja/imcollect/internal/fingertrees/FingerTreeTest.java
+index ca87db6..c62a56e 100644
+--- a/src/test/java/se/plilja/imcollect/internal/fingertrees/FingerTreeTest.java
++++ b/src/test/java/se/plilja/imcollect/internal/fingertrees/FingerTreeTest.java
+@@ -2,13 +2,18 @@ package se.plilja.imcollect.internal.fingertrees;
+
+ import com.pholser.junit.quickcheck.Property;
+ import com.pholser.junit.quickcheck.generator.InRange;
++import org.junit.Assume;
++import org.junit.Test;
+ import se.plilja.imcollect.internal.CollectionsBaseTest;
+
+ import java.util.ArrayList;
++import java.util.Arrays;
+ import java.util.List;
+ import java.util.function.Consumer;
+ import java.util.stream.IntStream;
+
++import static java.util.Arrays.asList;
++import static java.util.stream.Collectors.toList;
+ import static org.hamcrest.Matchers.lessThanOrEqualTo;
+ import static org.junit.Assert.*;
+
+@@ -108,4 +113,54 @@ public class FingerTreeTest extends CollectionsBaseTest {
+         assertEquals(-1, target.lastIndexOf(query));
+     }
+
++    @Property
++    public void removeExistingElementShouldDecreaseSize(List<@InRange(minInt = -10, maxInt = 10) Integer> baseCollection, int newValue) {
++        super.removeExistingElementShouldDecreaseSize(baseCollection, newValue);
++    }
++
++    @Property
++    public void removeExistingElementShouldDecreaseSize1(List<@InRange(minInt = -10, maxInt = 10) Integer> values) {
++        super.removeExistingElementShouldDecreaseSize(values);
++    }
++
++    @Property
++    public void removeAllShouldRemoveAllElements(List<@InRange(minInt = -10, maxInt = 10) Integer> base, List<@InRange(minInt = -10, maxInt = 10) Integer> toRemove) {
++        super.removeAllShouldRemoveAllElements(base, toRemove);
++    }
++
++    @Property
++    public void removeNonExistingElementShouldNotChangeSize(List<@InRange(minInt = -10, maxInt = 10) Integer> base, @InRange(minInt = -10, maxInt = 10) int toRemove) {
++        super.removeNonExistingElementShouldNotChangeSize(base, toRemove);
++    }
++
++    @Property
++    public void anAddedValueShouldBePresentInCollection(List<@InRange(minInt = -10, maxInt = 10) Integer> base, int newValue) {
++        super.anAddedValueShouldBePresentInCollection(base, newValue);
++    }
++
++    @Property
++    public void allAddedValueShouldBePresentInCollection(List<@InRange(minInt = -10, maxInt = 10) Integer> base, List<@InRange(minInt = -10, maxInt = 10) Integer> newValues) {
++        super.allAddedValueShouldBePresentInCollection(base, newValues);
++    }
++
++    @Property
++    public void emptyShouldAlwaysBeFalseAfterAdd(int newValue) {
++        super.emptyShouldAlwaysBeFalseAfterAdd(newValue);
++    }
++
++    @Property
++    public void retainAll(List<@InRange(minInt = -10, maxInt = 10) Integer> base, List<@InRange(minInt = -10, maxInt = 10) Integer> retainValues) {
++        super.retainAll(base, retainValues);
++    }
++
++    @Property
++    public void nullShouldNeverBePresent(List<Integer> base) {
++        super.nullShouldNeverBePresent(base);
++    }
++
++    @Property
++    public void removingNullShouldReturnTheExactSameInstance(List<Integer> base) {
++        super.removingNullShouldReturnTheExactSameInstance(base);
++    }
++
+ }
+\ No newline at end of file

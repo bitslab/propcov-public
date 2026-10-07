@@ -1,0 +1,87 @@
+version: 1
+name: manu
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 51b5e1485a55cadee3b9606e7a8a7b357ed3dd2d
+    URL: https://github.com/cldellow/manu.git
+patchName: artifacts/configs/manu/manu.patch
+mainJar:
+  - ./cli/target/manu-cli-0.3.0-SNAPSHOT.jar
+  - ./format/target/manu-format-0.3.0-SNAPSHOT.jar
+  - ./common/target/manu-common-0.3.0-SNAPSHOT.jar
+  - ./serve/target/manu-serve-0.3.0-SNAPSHOT.jar
+mainJarWithDependencies:
+  - ./cli/target/manu-cli-0.3.0-SNAPSHOT-jar-with-dependencies.jar
+  - ./common/target/manu-common-0.3.0-SNAPSHOT-jar-with-dependencies.jar
+  - ./format/target/manu-format-0.3.0-SNAPSHOT-jar-with-dependencies.jar
+  - ./serve/target/manu-serve-0.3.0-SNAPSHOT-jar-with-dependencies.jar
+testJar:
+  - ./cli/target/manu-cli-0.3.0-SNAPSHOT-tests.jar
+  - ./common/target/manu-common-0.3.0-SNAPSHOT-tests.jar
+  - ./format/target/manu-format-0.3.0-SNAPSHOT-tests.jar
+  - ./serve/target/manu-serve-0.3.0-SNAPSHOT-tests.jar
+buildSystem:
+  env:
+    JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+  properties:
+    XMLCoverageReport: "site/jacoco-aggregate/jacoco.xml"
+properties:
+- name: FileParserTest#testRandomInts
+  entryPoint: com.cldellow.manu.cli.FileParserTest.testRandomInts()V
+  subProject: cli
+- name: IntVectorTest#testLikeArray
+  entryPoint: com.cldellow.manu.common.IntVectorTest.testLikeArray([I)V
+  subProject: common
+- name: SimpleReaderTest#iterateWithNulls
+  entryPoint: com.cldellow.manu.format.SimpleReaderTest.iterateWithNulls(II)V
+  subProject: format
+- name: SimpleReaderTest#reader
+  entryPoint: com.cldellow.manu.format.SimpleReaderTest.reader(Ljava/lang/String;IILcom/cldellow/manu/format/Interval;III)V
+  subProject: format
+- name: AverageEncoderTest#encodeRandom
+  entryPoint: com.cldellow.manu.format.AverageEncoderTest.encodeRandom([I)V
+  subProject: format
+- name: PFOREncoderTest#encode
+  entryPoint: com.cldellow.manu.format.PFOREncoderTest.encode([I)V
+  subProject: format
+- name: CopyEncoderTest#encode
+  entryPoint: com.cldellow.manu.format.CopyEncoderTest.encode([I)V
+  subProject: format
+- name: SingleValueEncoderTest#encode
+  entryPoint: com.cldellow.manu.format.SingleValueEncoderTest.encode(I)V
+  subProject: format
+- name: ReaderTest#testVariableSize20K
+  entryPoint: com.cldellow.manu.format.ReaderTest.testVariableSize20K([I[I[I[I)V
+  subProject: format
+- name: ReaderTest#testVariableSize512
+  entryPoint: com.cldellow.manu.format.ReaderTest.testVariableSize512([I[I[I[I)V
+  subProject: format
+- name: LengthOpsTest#decodeIdAnyLen
+  entryPoint: com.cldellow.manu.format.LengthOpsTest.decodeIdAnyLen(II)V
+  subProject: format
+- name: LengthOpsTest#encodeTooBigId
+  entryPoint: com.cldellow.manu.format.LengthOpsTest.encodeTooBigId(B)V
+  subProject: format
+- name: LengthOpsTest#encodeTooSmallLen
+  entryPoint: com.cldellow.manu.format.LengthOpsTest.encodeTooSmallLen(I)V
+  subProject: format
+- name: ReaderTest#testVariableSize512
+  entryPoint: com.cldellow.manu.format.ReaderTest.testVariableSize512([I[I[I[I)V
+  subProject: format
+- name: LengthOpsTest#decodeIdAnyLen
+  entryPoint: com.cldellow.manu.format.LengthOpsTest.decodeIdAnyLen(II)V
+  subProject: format
+- name: LengthOpsTest#encodeTooBigId
+  entryPoint: com.cldellow.manu.format.LengthOpsTest.encodeTooBigId(B)V
+  subProject: format
+- name: LengthOpsTest#encodeTooSmallLen
+  entryPoint: com.cldellow.manu.format.LengthOpsTest.encodeTooSmallLen(I)V
+  subProject: format

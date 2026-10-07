@@ -1,0 +1,23 @@
+version: 1
+name: occurrent
+subProject: subscription/core
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: a86242cbe6df10ccf7a7950b69ec19c27cf34275
+    URL: https://github.com/johanhaleby/occurrent.git
+patchName: artifacts/configs/occurrent/occurrent.patch
+mainJar: subscription-core-0.19.12-SNAPSHOT.jar
+mainJarWithDependencies: subscription-core-0.19.12-SNAPSHOT-jar-with-dependencies.jar
+testJar: subscription-core-0.19.12-SNAPSHOT-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JQwik
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: DurationToTimeoutConverterPropertyBasedTest#timeout_is_always_greater_than_zero_regardless_of_supplied_time_unit
+  entryPoint: org.occurrent.subscription.DurationToTimeoutConverterPropertyBasedTest.timeout_is_always_greater_than_zero_regardless_of_supplied_time_unit(Ljava/time/Duration;Ljava/util/concurrent/TimeUnit;)V

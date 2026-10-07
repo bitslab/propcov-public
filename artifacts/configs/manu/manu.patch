@@ -1,0 +1,730 @@
+diff --git a/bin/lib.sh b/bin/lib.sh
+index 69621fd..d08e79f 100644
+--- a/bin/lib.sh
++++ b/bin/lib.sh
+@@ -5,7 +5,7 @@ function run_java {
+   shift
+   coverage_agent=""
+   if [ "${coverage:-0}" == "1" ]; then
+-    coverage_agent="-javaagent:$HOME/.m2/repository/org/jacoco/org.jacoco.agent/0.8.0/org.jacoco.agent-0.8.0-runtime.jar=destfile=${here:?}/target/jacoco.exec"
++    coverage_agent="-javaagent:$HOME/.m2/repository/org/jacoco/org.jacoco.agent/0.8.6/org.jacoco.agent-0.8.6-runtime.jar=destfile=${here:?}/target/jacoco.exec"
+   fi
+ 
+   # Note that hprof can be misleading; only use this as a rough gauge.
+diff --git a/cli/pom.xml b/cli/pom.xml
+index ecde5ea..1a4c096 100644
+--- a/cli/pom.xml
++++ b/cli/pom.xml
+@@ -51,93 +51,51 @@
+   </dependencies>
+   <build>
+     <plugins>
+-      <plugin>
+-        <groupId>org.jacoco</groupId>
+-        <artifactId>jacoco-maven-plugin</artifactId>
+-        <version>0.8.0</version>
+-        <executions>
+-          <execution>
+-            <goals>
+-              <goal>prepare-agent</goal>
+-            </goals>
+-          </execution>
+-        </executions>
+-      </plugin>
+-      <plugin>
+-        <groupId>org.apache.maven.plugins</groupId>
+-        <artifactId>maven-shade-plugin</artifactId>
+-        <version>3.1.0</version>
+-        <executions>
+-          <execution>
+-            <phase>package</phase>
+-            <goals>
+-              <goal>shade</goal>
+-            </goals>
+-            <configuration>
+-              <artifactSet>
+-                <excludes>
+-                  <exclude>classworlds:classworlds</exclude>
+-                  <exclude>junit:junit</exclude>
+-                  <exclude>jmock:*</exclude>
+-                  <exclude>*:xml-apis</exclude>
+-                  <exclude>org.apache.maven:lib:tests</exclude>
+-                  <exclude>log4j:log4j:jar:</exclude>
+-                </excludes>
+-              </artifactSet>
+-              <filters>
+-                <filter>
+-                  <artifact>*:*</artifact>
+-                  <excludes>
+-                    <exclude>org/sqlite/native/Linux/android-arm/*</exclude>
+-                    <exclude>org/sqlite/native/Linux/aarch64/*</exclude>
+-                    <exclude>org/sqlite/native/Linux/arm/*</exclude>
+-                    <exclude>org/sqlite/native/Linux/armv6/*</exclude>
+-                    <exclude>org/sqlite/native/Linux/armv7/*</exclude>
+-                    <exclude>org/sqlite/native/Linux/ppc64/*</exclude>
+-                    <exclude>org/sqlite/native/Linux/x86/*</exclude>
+-                    <exclude>org/sqlite/native/FreeBSD/*/*</exclude>
+-                    <exclude>org/sqlite/native/Mac/*/*</exclude>
+-                    <exclude>org/sqlite/native/Windows/*/*</exclude>
+-                  </excludes>
+-                </filter>
+-              </filters>
+-            </configuration>
+-          </execution>
+-        </executions>
+-      </plugin>
+-      <plugin>
+-        <artifactId>maven-antrun-plugin</artifactId>
+-        <version>1.8</version>
+-        <executions>
+-          <execution>
+-            <id>bash-tests</id>
+-            <phase>test</phase>
+-            <goals>
+-              <goal>run</goal>
+-            </goals>
+-            <configuration>
+-              <target>
+-                <exec executable="bin/test/run-tests" failOnError="true" />
+-              </target>
+-            </configuration>
+-          </execution>
+-          <execution>
+-            <id>make-self-executing</id>
+-            <phase>package</phase>
+-            <goals>
+-              <goal>run</goal>
+-            </goals>
+-            <configuration>
+-              <target>
+-                <exec executable="../bin/make-executable-jar" failOnError="true">
+-                  <arg value="cli"/>
+-                  <arg value="com.cldellow.manu.cli.CliApp"/>
+-                </exec>
+-              </target>
+-            </configuration>
+-          </execution>
+-        </executions>
+-      </plugin>
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-compiler-plugin</artifactId>
++                <configuration>
++                    <source>1.8</source>
++                    <target>1.8</target>
++                </configuration>
++            </plugin>
++           <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-assembly-plugin</artifactId>
++                <version>3.3.0</version>
++
++                <configuration>
++                    <descriptorRefs>
++                        <descriptorRef>jar-with-dependencies</descriptorRef>
++                    </descriptorRefs>
++                </configuration>
++
++                <executions>
++
++                    <execution>
++                        <id>make-assembly</id>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>single</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 2. Using maven assembly to compile the test jar -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <executions>
++                    <execution>
++                        <goals>
++                            <goal>test-jar</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
+     </plugins>
+   </build>
+ </project>
+diff --git a/common/pom.xml b/common/pom.xml
+index 1a205a8..013725a 100644
+--- a/common/pom.xml
++++ b/common/pom.xml
+@@ -30,18 +30,52 @@
+   </dependencies>
+   <build>
+     <plugins>
+-      <plugin>
+-        <groupId>org.jacoco</groupId>
+-        <artifactId>jacoco-maven-plugin</artifactId>
+-        <version>0.8.0</version>
+-        <executions>
+-          <execution>
+-            <goals>
+-              <goal>prepare-agent</goal>
+-            </goals>
+-          </execution>
+-        </executions>
+-      </plugin>
+-    </plugins>
++           <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-compiler-plugin</artifactId>
++                <configuration>
++                    <source>1.8</source>
++                    <target>1.8</target>
++                </configuration>
++            </plugin>
++            <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-assembly-plugin</artifactId>
++                <version>3.3.0</version>
++
++                <configuration>
++                    <descriptorRefs>
++                        <descriptorRef>jar-with-dependencies</descriptorRef>
++                    </descriptorRefs>
++                </configuration>
++
++                <executions>
++
++                    <execution>
++                        <id>make-assembly</id>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>single</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 2. Using maven assembly to compile the test jar -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <executions>
++                    <execution>
++                        <goals>
++                            <goal>test-jar</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++	</plugins>
+   </build>
++
+ </project>
+diff --git a/common/src/test/java/com/cldellow/manu/common/IntVectorTest.java b/common/src/test/java/com/cldellow/manu/common/IntVectorTest.java
+index bc3494c..e19e298 100644
+--- a/common/src/test/java/com/cldellow/manu/common/IntVectorTest.java
++++ b/common/src/test/java/com/cldellow/manu/common/IntVectorTest.java
+@@ -62,8 +62,8 @@ public class IntVectorTest {
+     }
+ 
+     @Property
+-    public void testLikeArray(int[] ints) {
+-        IntVector iv = new IntVector();
++    public void testLikeArray(int[] ints, boolean grow) {
++        IntVector iv = grow ? new IntVector(1) : new IntVector();
+         for (int i = 0; i < ints.length; i++) {
+             assertEquals(i, iv.getSize());
+             iv.add(ints[i]);
+diff --git a/format/pom.xml b/format/pom.xml
+index 7aebe09..66925c3 100644
+--- a/format/pom.xml
++++ b/format/pom.xml
+@@ -52,18 +52,51 @@
+   </dependencies>
+   <build>
+     <plugins>
+-      <plugin>
+-        <groupId>org.jacoco</groupId>
+-        <artifactId>jacoco-maven-plugin</artifactId>
+-        <version>0.8.0</version>
+-        <executions>
+-          <execution>
+-            <goals>
+-              <goal>prepare-agent</goal>
+-            </goals>
+-          </execution>
+-        </executions>
+-      </plugin>
+-    </plugins>
+-  </build>
++           <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-compiler-plugin</artifactId>
++                <configuration>
++                    <source>1.8</source>
++                    <target>1.8</target>
++                </configuration>
++            </plugin>
++            <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-assembly-plugin</artifactId>
++                <version>3.3.0</version>
++
++                <configuration>
++                    <descriptorRefs>
++                        <descriptorRef>jar-with-dependencies</descriptorRef>
++                    </descriptorRefs>
++                </configuration>
++
++                <executions>
++
++                    <execution>
++                        <id>make-assembly</id>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>single</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 2. Using maven assembly to compile the test jar -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <executions>
++                    <execution>
++                        <goals>
++                            <goal>test-jar</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++	</plugins>
++    </build>
+ </project>
+diff --git a/pom.xml b/pom.xml
+index 88ee067..b080d76 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -40,6 +40,7 @@
+     <module>cli</module>
+     <module>serve</module>
+     <module>report</module>
++    <module>propcovrun</module>
+   </modules>
+   <distributionManagement>
+     <snapshotRepository>
+@@ -137,47 +138,30 @@
+   </dependencyManagement>
+   <build>
+     <plugins>
+-      <plugin>
+-        <groupId>org.apache.maven.plugins</groupId>
+-        <artifactId>maven-dependency-plugin</artifactId>
+-        <version>3.0.2</version>
+-        <executions>
+-          <execution>
+-            <!-- Write a file containing the classpath for all runtime dependencies (not test)
+-                 This is used in dev mode for scripts to source.
+-            -->
+-            <id>build-classpath</id>
+-            <phase>generate-sources</phase>
+-            <goals>
+-              <goal>build-classpath</goal>
+-            </goals>
+-            <configuration>
+-              <outputFile>cp.txt</outputFile>
+-              <includeScope>runtime</includeScope>
+-            </configuration>
+-          </execution>
+-        </executions>
+-      </plugin>
+-      <plugin>
+-        <artifactId>maven-antrun-plugin</artifactId>
+-        <version>1.8</version>
+-        <executions>
+-          <execution>
+-            <id>run-shellcheck</id>
+-            <phase>compile</phase>
+-            <goals>
+-              <goal>run</goal>
+-            </goals>
+-            <configuration>
+-              <target>
+-                <exec executable="${manu.root}/bin/run-shellcheck" failOnError="true" />
+-              </target>
+-            </configuration>
+-          </execution>
+-        </executions>
+-      </plugin>
+-    </plugins>
+-  </build>
++     <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <version>0.8.6</version>
++                <executions>
++                    <execution>
++                        <id>prepare-agent</id>
++                        <goals>
++                            <goal>prepare-agent</goal>
++                        </goals>
++                    </execution>
++                    <execution>
++                        <id>report</id>
++                        <phase>test</phase>
++                        <goals>
++                            <goal>report</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++
++	</plugins>
++	</build>
+   <profiles>
+     <profile>
+       <activation>
+@@ -241,5 +225,6 @@
+         </plugins>
+       </build>
+     </profile>
+-  </profiles>
++</profiles>
++
+ </project>
+diff --git a/propcovrun/pom.xml b/propcovrun/pom.xml
+new file mode 100644
+index 0000000..8e83e92
+--- /dev/null
++++ b/propcovrun/pom.xml
+@@ -0,0 +1,122 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>com.cldellow</groupId>
++    <artifactId>manu</artifactId>
++    <version>0.3.0-SNAPSHOT</version>
++    <relativePath>../pom.xml</relativePath>
++  </parent>
++  <artifactId>propcovrun</artifactId>
++  <name>${project.groupId}:${project.artifactId}</name>
++  <url>https://github.com/cldellow/manu</url>
++  <packaging>pom</packaging>
++  <properties>
++    <manu.root>${basedir}/..</manu.root>
++  </properties>
++  <dependencies>
++    <dependency>
++      <groupId>com.cldellow</groupId>
++      <artifactId>manu-format</artifactId>
++    </dependency>
++    <dependency>
++      <groupId>com.cldellow</groupId>
++      <artifactId>manu-cli</artifactId>
++    </dependency>
++    <dependency>
++      <groupId>com.cldellow</groupId>
++      <artifactId>manu-common</artifactId>
++    </dependency>
++    <dependency>
++      <groupId>com.cldellow</groupId>
++      <artifactId>manu-serve</artifactId>
++    </dependency>
++  </dependencies>
++  <build>
++    <plugins>
++      <plugin>
++        <groupId>org.jacoco</groupId>
++        <artifactId>jacoco-maven-plugin</artifactId>
++        <version>0.8.6</version>
++        <configuration>
++          <fileSets>
++            <fileSet implementation="org.apache.maven.shared.model.fileset.FileSet">
++              <directory>${project.build.directory}</directory>
++              <includes>
++                <include>*.exec</include>
++              </includes>
++            </fileSet>
++          </fileSets>
++        </configuration>
++        <executions>
++          <execution>
++            <id>merge</id>
++            <phase>test</phase>
++            <goals>
++              <goal>merge</goal>
++            </goals>
++          </execution>
++          <execution>
++            <id>report</id>
++            <phase>test</phase>
++            <goals>
++              <goal>report</goal>
++            </goals>
++          </execution>
++        </executions>
++      </plugin>
++            <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-assembly-plugin</artifactId>
++                <version>3.3.0</version>
++
++                <configuration>
++                    <descriptorRefs>
++                        <descriptorRef>jar-with-dependencies</descriptorRef>
++                    </descriptorRefs>
++                </configuration>
++
++                <executions>
++
++                    <execution>
++                        <id>make-assembly</id>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>single</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 2. Using maven assembly to compile the test jar -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <executions>
++                    <execution>
++                        <goals>
++                            <goal>test-jar</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 3. Jar instrumentation for jacoco -->
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <version>0.8.6</version>
++                <executions>
++                    <execution>
++                        <id>default-prepare-agent</id>
++                        <goals>
++                            <goal>prepare-agent</goal>
++                        </goals>
++		    </execution>
++		</executions>
++	    </plugin>
++  </plugins>
++  </build>
++</project>
+diff --git a/report/pom.xml b/report/pom.xml
+index c1d6d2d..766acd5 100644
+--- a/report/pom.xml
++++ b/report/pom.xml
+@@ -32,57 +32,4 @@
+       <artifactId>manu-serve</artifactId>
+     </dependency>
+   </dependencies>
+-  <build>
+-    <plugins>
+-      <plugin>
+-        <artifactId>maven-antrun-plugin</artifactId>
+-        <version>1.8</version>
+-        <executions>
+-          <execution>
+-            <id>fixup-report</id>
+-            <phase>test</phase>
+-            <goals>
+-              <goal>run</goal>
+-            </goals>
+-            <configuration>
+-              <target>
+-                <exec executable="./fixup-report" failOnError="true" />
+-              </target>
+-            </configuration>
+-          </execution>
+-        </executions>
+-      </plugin>
+-      <plugin>
+-        <groupId>org.jacoco</groupId>
+-        <artifactId>jacoco-maven-plugin</artifactId>
+-        <version>0.8.0</version>
+-        <configuration>
+-          <fileSets>
+-            <fileSet implementation="org.apache.maven.shared.model.fileset.FileSet">
+-              <directory>${project.build.directory}</directory>
+-              <includes>
+-                <include>*.exec</include>
+-              </includes>
+-            </fileSet>
+-          </fileSets>
+-        </configuration>
+-        <executions>
+-          <execution>
+-            <id>merge</id>
+-            <phase>test</phase>
+-            <goals>
+-              <goal>merge</goal>
+-            </goals>
+-          </execution>
+-          <execution>
+-            <id>report</id>
+-            <phase>test</phase>
+-            <goals>
+-              <goal>report</goal>
+-            </goals>
+-          </execution>
+-        </executions>
+-      </plugin>
+-    </plugins>
+-  </build>
+ </project>
+diff --git a/serve/pom.xml b/serve/pom.xml
+index 85417ee..596514b 100644
+--- a/serve/pom.xml
++++ b/serve/pom.xml
+@@ -50,93 +50,44 @@
+   </dependencies>
+   <build>
+     <plugins>
+-      <plugin>
+-        <groupId>org.jacoco</groupId>
+-        <artifactId>jacoco-maven-plugin</artifactId>
+-        <version>0.8.0</version>
+-        <executions>
+-          <execution>
+-            <goals>
+-              <goal>prepare-agent</goal>
+-            </goals>
+-          </execution>
+-        </executions>
+-      </plugin>
+-      <plugin>
+-        <groupId>org.apache.maven.plugins</groupId>
+-        <artifactId>maven-shade-plugin</artifactId>
+-        <version>3.1.0</version>
+-        <executions>
+-          <execution>
+-            <phase>package</phase>
+-            <goals>
+-              <goal>shade</goal>
+-            </goals>
+-            <configuration>
+-              <artifactSet>
+-                <excludes>
+-                  <exclude>classworlds:classworlds</exclude>
+-                  <exclude>junit:junit</exclude>
+-                  <exclude>jmock:*</exclude>
+-                  <exclude>*:xml-apis</exclude>
+-                  <exclude>org.apache.maven:lib:tests</exclude>
+-                  <exclude>log4j:log4j:jar:</exclude>
+-                </excludes>
+-              </artifactSet>
+-              <filters>
+-                <filter>
+-                  <artifact>*:*</artifact>
+-                  <excludes>
+-                    <exclude>org/sqlite/native/Linux/android-arm/*</exclude>
+-                    <exclude>org/sqlite/native/Linux/aarch64/*</exclude>
+-                    <exclude>org/sqlite/native/Linux/arm/*</exclude>
+-                    <exclude>org/sqlite/native/Linux/armv6/*</exclude>
+-                    <exclude>org/sqlite/native/Linux/armv7/*</exclude>
+-                    <exclude>org/sqlite/native/Linux/ppc64/*</exclude>
+-                    <exclude>org/sqlite/native/Linux/x86/*</exclude>
+-                    <exclude>org/sqlite/native/FreeBSD/*/*</exclude>
+-                    <exclude>org/sqlite/native/Mac/*/*</exclude>
+-                    <exclude>org/sqlite/native/Windows/*/*</exclude>
+-                  </excludes>
+-                </filter>
+-              </filters>
+-            </configuration>
+-          </execution>
+-        </executions>
+-      </plugin>
+-      <plugin>
+-        <artifactId>maven-antrun-plugin</artifactId>
+-        <version>1.8</version>
+-        <executions>
+-          <execution>
+-            <id>bash-tests</id>
+-            <phase>test</phase>
+-            <goals>
+-              <goal>run</goal>
+-            </goals>
+-            <configuration>
+-              <target>
+-                <exec executable="bin/test/run-tests" failOnError="true" />
+-              </target>
+-            </configuration>
+-          </execution>
+-          <execution>
+-            <id>make-self-executing</id>
+-            <phase>package</phase>
+-            <goals>
+-              <goal>run</goal>
+-            </goals>
+-            <configuration>
+-              <target>
+-                <exec executable="../bin/make-executable-jar" failOnError="true">
+-                  <arg value="serve"/>
+-                  <arg value="com.cldellow.manu.serve.ManuApp"/>
+-                </exec>
+-              </target>
+-            </configuration>
+-          </execution>
+-        </executions>
+-      </plugin>
++<!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-assembly-plugin</artifactId>
++                <version>3.3.0</version>
++
++                <configuration>
++                    <descriptorRefs>
++                        <descriptorRef>jar-with-dependencies</descriptorRef>
++                    </descriptorRefs>
++                </configuration>
++
++                <executions>
++
++                    <execution>
++                        <id>make-assembly</id>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>single</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 2. Using maven assembly to compile the test jar -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <executions>
++                    <execution>
++                        <goals>
++                            <goal>test-jar</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
+     </plugins>
+-  </build>
++</build>
++
+ </project>

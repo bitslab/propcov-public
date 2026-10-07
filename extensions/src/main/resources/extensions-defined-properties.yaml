@@ -1,0 +1,44 @@
+packageName: edu.uic.bitslab.propcov.extensions
+description: PropCov default extensions properties
+applyOrder: 2
+props:
+  - name: "PropCov.Source.Git.URL"
+    defaultValue: "null"
+    description: "Git: URL for SUT."
+  - name: "PropCov.Source.Git.CheckoutID"
+    defaultValue: "null"
+    description: "Git: CheckoutID for SUT."
+  - name: "PropCov.Source.Git.CacheDirectory"
+    defaultValue: "../propcov-cache"
+    description: "Git: CacheDirectory for SUT."
+
+  - name: "PropCov.Source.Local.Directory"
+    defaultValue: "null"
+    description: "Local: Directory for SUT."
+
+  - name: "PropCov.Coverage.JaCoCo.XMLCoverageReport"
+    defaultValue: "site/jacoco/jacoco.xml"
+    description: "JaCoCo: XML coverage report location"
+
+  - name: "PropCov.BuildSystem.Maven.LocalDirectory"
+    defaultValue: "null"
+    description: "Maven: Directory to the SUT (default <Base_Dir>/<project>/<subproject>"
+  - name: "PropCov.BuildSystem.Maven.TargetPath"
+    defaultValue: "null"
+    description: "Maven: Directory to the compiled (target) of the SUT (default <LocalDirectory>/target)."
+  - name: "PropCov.BuildSystem.Maven.Options"
+    defaultValue: "null"
+    description: "Maven: CLI Option(s) passed to Maven runtime"
+  - name: "PropCov.BuildSystem.Env.*"
+    defaultValue: "null"
+    description: "Build: Properties matching this pattern are available to each implementation."
+
+  - name: "PropCov.AnalysisFramework.Opal.OPALLoggerType"
+    defaultValue: "warn"
+    description: "OPAL: Set verbosity of logging within the Opal Framework"
+  - name: "PropCov.AnalysisFramework.Opal.AnalysisFlags"
+    defaultValue: "EXCEPTION,ITERATOR"
+    description: "OPAL: Set the optimization flags"
+  - name: "PropCov.AnalysisFramework.Opal.AnalysisType"
+    defaultValue: "RTA"
+    description: "OPAL: Set the underlying analysis type for Opal"

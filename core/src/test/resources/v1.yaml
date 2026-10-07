@@ -1,0 +1,43 @@
+version: 1
+name: test project
+subProject: core
+source:
+  env: {
+  }
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 01e09ee1424be08ec70f3787874118d6638cc63d
+    URL: https://foo/bar/test.git
+patchName: artifacts/configs/foo/foo.patch
+mainJar: foo.jar
+mainJarWithDependencies: foo-with-dependencies.jar
+testJar: foo-tests.jar
+buildSystem:
+  env: {
+  }
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+  properties: {
+  }
+testFramework:
+  env: {
+  }
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+  properties: {
+  }
+analysisFramework:
+  env: {
+  }
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+  properties: {
+  }
+packageNames: null
+timeouts: null
+coverage:
+  env: {
+  }
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.jacoco.Coverage
+  properties: {
+  }
+properties:
+  - name: Foo#PropOne
+    entryPoint: foo.bar.PropOne()V

@@ -1,0 +1,272 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>edu.uic.bitslab</groupId>
+    <artifactId>propcov</artifactId>
+    <version>0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>PropCov</name>
+
+    <modules>
+        <module>core</module>
+        <module>extensions</module>
+        <module>runtime</module>
+        <module>test-reports</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.jvm.version>15</project.jvm.version>
+        <project.scala.version>2.13</project.scala.version>
+
+        <!-- build dependency version numbers -->
+        <version.maven-compiler-plugin>3.12.1</version.maven-compiler-plugin>
+        <version.maven-javadoc-plugin>3.11.2</version.maven-javadoc-plugin>
+        <version.maven-failsafe-plugin>2.22.0</version.maven-failsafe-plugin>
+        <version.maven-surefire-plugin>3.5.1</version.maven-surefire-plugin>
+        <version.maven-shade-plugin>3.5.0</version.maven-shade-plugin>
+        <version.net.alchim31.maven.scala-maven-plugin>3.3.2</version.net.alchim31.maven.scala-maven-plugin>
+        <version.org.codehaus.mojo.jaxb2-maven-plugin>3.3.0</version.org.codehaus.mojo.jaxb2-maven-plugin>
+
+        <!-- dependency version numbers -->
+        <version.org.jgrapht>1.5.2</version.org.jgrapht>
+        <version.org.yaml.snakeyaml>2.2</version.org.yaml.snakeyaml>
+        <version.org.jacoco>0.8.13</version.org.jacoco>
+        <version.org.slf4j>1.7.30</version.org.slf4j>
+        <version.org.junit.jupiter>5.13.1</version.org.junit.jupiter>
+        <version.de.opal-project>5.0.1-SNAPSHOT</version.de.opal-project>
+        <version.com.fasterxml.jackson.core>2.18.2</version.com.fasterxml.jackson.core>
+        <version.org.mockito>5.14.2</version.org.mockito>
+        <version.net.jqwik>1.9.3</version.net.jqwik>
+        <version.org.scala-lang>2.13.10</version.org.scala-lang>
+        <version.org.scalatest>3.2.16</version.org.scalatest>
+
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jgrapht</groupId>
+                <artifactId>jgrapht-core</artifactId>
+                <version>${version.org.jgrapht}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jgrapht</groupId>
+                <artifactId>jgrapht-io</artifactId>
+                <version>${version.org.jgrapht}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${version.org.yaml.snakeyaml}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jacoco</groupId>
+                <artifactId>org.jacoco.core</artifactId>
+                <version>${version.org.jacoco}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${version.org.slf4j}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${version.org.slf4j}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${version.org.junit.jupiter}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>de.opal-project</groupId>
+                <artifactId>bytecode-representation_2.13</artifactId>
+                <version>${version.de.opal-project}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>de.opal-project</groupId>
+                <artifactId>framework_2.13</artifactId>
+                <version>${version.de.opal-project}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>de.opal-project</groupId>
+                <artifactId>three-address-code_2.13</artifactId>
+                <version>${version.de.opal-project}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>de.opal-project</groupId>
+                <artifactId>abstract-interpretation-framework_2.13</artifactId>
+                <version>${version.de.opal-project}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>de.opal-project</groupId>
+                <artifactId>static-analysis-infrastructure_2.13</artifactId>
+                <version>${version.de.opal-project}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>de.opal-project</groupId>
+                <artifactId>bytecode-disassembler_2.13</artifactId>
+                <version>${version.de.opal-project}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>de.opal-project</groupId>
+                <artifactId>common_2.13</artifactId>
+                <version>${version.de.opal-project}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${version.com.fasterxml.jackson.core}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${version.com.fasterxml.jackson.core}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${version.org.mockito}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.jqwik</groupId>
+                <artifactId>jqwik</artifactId>
+                <version>${version.net.jqwik}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-library</artifactId>
+                <version>${version.org.scala-lang}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.scalatest</groupId>
+                <artifactId>scalatest_2.13</artifactId>
+                <version>${version.org.scalatest}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <scope>test</scope>
+            <version>${version.org.jacoco}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${version.maven-compiler-plugin}</version>
+                <configuration>
+                    <source>${project.jvm.version}</source>
+                    <target>${project.jvm.version}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${version.maven-javadoc-plugin}</version>
+                <configuration>
+                    <failOnError>true</failOnError>
+                    <sourcepath>${project.basedir}/core/src/main;${project.basedir}/extensions/src/main;${project.basedir}/extensions/target/generated-sources;${project.basedir}/experiments/src/main;${project.basedir}/runtime/src/main</sourcepath>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${version.maven-surefire-plugin}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${version.org.jacoco}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${version.maven-javadoc-plugin}</version>
+                <reportSets>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <id>default</id>
+                        <reports>
+                            <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+</project>

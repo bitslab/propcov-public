@@ -1,0 +1,34 @@
+version: 1
+name: rpki-commons
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: dd5af7c644d2cd9cc6b0b5f4f2480b6dfc1ef074
+    URL: https://github.com/RIPE-NCC/rpki-commons.git
+patchName: artifacts/configs/rpki-commons/rpki-commons.patch
+mainJar: rpki-commons-DEV.jar
+mainJarWithDependencies: rpki-commons-DEV-jar-with-dependencies.jar
+testJar: rpki-commons-DEV-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+  properties:
+    mvnOptions: -DfailIfNoTests=false
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: RoaCMSBuilderPropertyTest#buildEncodedParseCheck
+  entryPoint: net.ripe.rpki.commons.crypto.cms.roa.RoaCMSBuilderPropertyTest.buildEncodedParseCheck(JLjava/lang/Integer;)V
+- name: ManifestCMSBuilderPropertyTest#buildEncodedParseCheck
+  entryPoint: net.ripe.rpki.commons.crypto.cms.manifest.ManifestCMSBuilderPropertyTest.buildEncodedParseCheck([BLjava/math/BigInteger;Ljava/lang/Integer;)V
+- name: AspaCmsTest#should_generate_aspa
+  entryPoint: net.ripe.rpki.commons.crypto.cms.aspa.AspaCmsTest.should_generate_aspa(ILjava/util/List;)V
+- name: X509ResourceCertificateParentChildValidatorTest#validParentChildSubResources
+  entryPoint: net.ripe.rpki.commons.validation.X509ResourceCertificateParentChildValidatorTest.validParentChildSubResources(Ljava/util/List;I)V
+- name: X509ResourceCertificateParentChildValidatorTest#validParentChildOverClaiming
+  entryPoint: net.ripe.rpki.commons.validation.X509ResourceCertificateParentChildValidatorTest.validParentChildOverClaiming(Ljava/util/List;ILjava/util/List;)V
+- name: X509ResourceCertificateParentChildValidatorTest#validParentChildOverClaimingLooseValidation
+  entryPoint: net.ripe.rpki.commons.validation.X509ResourceCertificateParentChildValidatorTest.validParentChildOverClaimingLooseValidation(Ljava/util/List;ILjava/util/List;)V

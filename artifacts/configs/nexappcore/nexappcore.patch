@@ -1,0 +1,141 @@
+diff --git a/pom.xml b/pom.xml
+index c80ad7b..4bfb665 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -18,6 +18,65 @@
+
+     <build>
+         <plugins>
++            <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-assembly-plugin</artifactId>
++                <version>3.3.0</version>
++
++                <configuration>
++                    <descriptorRefs>
++                        <descriptorRef>jar-with-dependencies</descriptorRef>
++                    </descriptorRefs>
++                </configuration>
++
++                <executions>
++
++                    <execution>
++                        <id>make-assembly</id>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>single</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 2. Using maven assembly to compile the test jar -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <executions>
++                    <execution>
++                        <goals>
++                            <goal>test-jar</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 3. Jar instrumentation for jacoco -->
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <version>0.8.6</version>
++                <executions>
++                    <execution>
++                        <id>default-prepare-agent</id>
++                        <goals>
++                            <goal>prepare-agent</goal>
++                        </goals>
++                    </execution>
++                    <execution>
++                        <id>jacoco-report</id>
++                        <phase>test</phase>
++                        <goals>
++                            <goal>report</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
+             <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-compiler-plugin</artifactId>
+@@ -86,14 +145,19 @@
+             <groupId>junit</groupId>
+             <artifactId>junit</artifactId>
+             <version>4.13.1</version>
+-            <scope>test</scope>
+         </dependency>
+
+         <dependency>
+             <groupId>com.pholser</groupId>
+             <artifactId>junit-quickcheck-core</artifactId>
+-            <version>0.7</version>
+-            <scope>test</scope>
++            <version>1.0</version>
++        </dependency>
++
++
++        <dependency>
++            <groupId>com.pholser</groupId>
++            <artifactId>junit-quickcheck-generators</artifactId>
++            <version>1.0</version>
+         </dependency>
+
+         <dependency>
+@@ -128,4 +192,21 @@
+             <version>1.11</version>
+         </dependency>
+     </dependencies>
+-</project>
+\ No newline at end of file
++
++  <reporting>
++    <plugins>
++            <!-- 4. Reporting for jacoco -->
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <reportSets>
++                    <reportSet>
++                        <reports>
++                            <report>report</report>
++                        </reports>
++                    </reportSet>
++                </reportSets>
++            </plugin>
++    </plugins>
++  </reporting>
++</project>
+diff --git a/src/test/java/ca/nexapp/core/authentication/hashers/SHA512PasswordHasherTest.java b/src/test/java/ca/nexapp/core/authentication/hashers/SHA512PasswordHasherTest.java
+index 1e355e5..417531f 100644
+--- a/src/test/java/ca/nexapp/core/authentication/hashers/SHA512PasswordHasherTest.java
++++ b/src/test/java/ca/nexapp/core/authentication/hashers/SHA512PasswordHasherTest.java
+@@ -1,5 +1,10 @@
+ package ca.nexapp.core.authentication.hashers;
+
++import com.pholser.junit.quickcheck.Property;
++import com.pholser.junit.quickcheck.runner.JUnitQuickcheck;
++import org.junit.runner.RunWith;
++
++@RunWith(JUnitQuickcheck.class)
+ public class SHA512PasswordHasherTest extends PasswordHasherTest {
+
+     @Override
+@@ -7,4 +12,8 @@ public class SHA512PasswordHasherTest extends PasswordHasherTest {
+         return new SHA512PasswordHasher();
+     }
+
++    @Property
++    public void samePasswordAndSaltShouldMatchHash(String password, byte[] salt) {
++        super.samePasswordAndSaltShouldMatchHash(password, salt);
++    }
+ }

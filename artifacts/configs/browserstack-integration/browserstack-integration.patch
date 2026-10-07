@@ -1,0 +1,123 @@
+diff --git a/pom.xml b/pom.xml
+index 0c87cb3..34aaec6 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -11,7 +11,7 @@
+
+   <artifactId>browserstack-integration</artifactId>
+   <version>1.2.14-SNAPSHOT</version>
+-  <packaging>hpi</packaging>
++  <packaging>jar</packaging>
+
+   <name>BrowserStack</name>
+   <description>This plugin allows you to integrate with BrowserStack.</description>
+@@ -324,6 +324,65 @@
+       </resource>
+     </resources>
+     <plugins>
++            <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-assembly-plugin</artifactId>
++                <version>3.3.0</version>
++
++                <configuration>
++                    <descriptorRefs>
++                        <descriptorRef>jar-with-dependencies</descriptorRef>
++                    </descriptorRefs>
++                </configuration>
++
++                <executions>
++
++                    <execution>
++                        <id>make-assembly</id>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>single</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 2. Using maven assembly to compile the test jar -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <executions>
++                    <execution>
++                        <goals>
++                            <goal>test-jar</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 3. Jar instrumentation for jacoco -->
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <version>0.8.6</version>
++                <executions>
++                    <execution>
++                        <id>default-prepare-agent</id>
++                        <goals>
++                            <goal>prepare-agent</goal>
++                        </goals>
++                    </execution>
++                    <execution>
++                        <id>jacoco-report</id>
++                        <phase>test</phase>
++                        <goals>
++                            <goal>report</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
+       <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-release-plugin</artifactId>
+@@ -340,7 +399,7 @@
+       <plugin>
+         <groupId>org.jacoco</groupId>
+         <artifactId>jacoco-maven-plugin</artifactId>
+-        <version>0.7.5.201505241946</version>
++        <version>0.8.12</version>
+         <executions>
+           <execution>
+             <goals>
+@@ -367,9 +426,9 @@
+               <value>33849</value>
+             </property>
+           </systemProperties>
+-          <reuseForks>true</reuseForks>
+-          <forkCount>1</forkCount>
+-          <argLine>${argLine} -Xmx512m -XX:MaxPermSize=256m</argLine>
++          <!--<reuseForks>true</reuseForks>
++          <forkCount>1</forkCount>-->
++          <!--<argLine>${argLine} -Xmx512m -XX:MaxPermSize=256m</argLine>-->
+         </configuration>
+       </plugin>
+
+@@ -428,4 +487,21 @@
+     </profile>
+   </profiles>
+
++  <reporting>
++    <plugins>
++            <!-- 4. Reporting for jacoco -->
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <reportSets>
++                    <reportSet>
++                        <reports>
++                            <report>report</report>
++                        </reports>
++                    </reportSet>
++                </reportSets>
++            </plugin>
++    </plugins>
++  </reporting>
++
+ </project>

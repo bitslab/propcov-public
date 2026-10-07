@@ -1,0 +1,43 @@
+version: 1
+name: manu-format-fixed
+subProject: format
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 51b5e1485a55cadee3b9606e7a8a7b357ed3dd2d
+    URL: https://github.com/cldellow/manu.git
+patchName: artifacts/configs/manu-format-fixed/manu-format-fixed.patch
+mainJar: manu-format-0.3.0-SNAPSHOT.jar
+mainJarWithDependencies: manu-format-0.3.0-SNAPSHOT-jar-with-dependencies.jar
+testJar: manu-format-0.3.0-SNAPSHOT-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: SimpleReaderTest#iterateWithNulls
+  entryPoint: com.cldellow.manu.format.SimpleReaderTest.iterateWithNulls(II)V
+- name: SimpleReaderTest#reader
+  entryPoint: com.cldellow.manu.format.SimpleReaderTest.reader(Ljava/lang/String;IILcom/cldellow/manu/format/Interval;III)V
+- name: AverageEncoderTest#encodeRandom
+  entryPoint: com.cldellow.manu.format.AverageEncoderTest.encodeRandom([I)V
+- name: PFOREncoderTest#encode
+  entryPoint: com.cldellow.manu.format.PFOREncoderTest.encode([I)V
+- name: CopyEncoderTest#encode
+  entryPoint: com.cldellow.manu.format.CopyEncoderTest.encode([I)V
+- name: SingleValueEncoderTest#encode
+  entryPoint: com.cldellow.manu.format.SingleValueEncoderTest.encode(I)V
+- name: ReaderTest#testVariableSize20K
+  entryPoint: com.cldellow.manu.format.ReaderTest.testVariableSize20K([I[I[I[I)V
+- name: ReaderTest#testVariableSize512
+  entryPoint: com.cldellow.manu.format.ReaderTest.testVariableSize512([I[I[I[I)V
+- name: LengthOpsTest#decodeIdAnyLen
+  entryPoint: com.cldellow.manu.format.LengthOpsTest.decodeIdAnyLen(II)V
+- name: LengthOpsTest#encodeTooBigId
+  entryPoint: com.cldellow.manu.format.LengthOpsTest.encodeTooBigId(B)V
+- name: LengthOpsTest#encodeTooSmallLen
+  entryPoint: com.cldellow.manu.format.LengthOpsTest.encodeTooSmallLen(I)V

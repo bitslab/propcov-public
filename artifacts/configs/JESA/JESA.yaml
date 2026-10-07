@@ -1,0 +1,22 @@
+version: 1
+name: JESA
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 70602db4a66002a813150f55dca4ae041893afc2
+    URL: https://github.com/yreynhout/JESA.git
+patchName: artifacts/configs/JESA/JESA.patch
+mainJar: jesa-1.0-SNAPSHOT.jar
+mainJarWithDependencies: jesa-1.0-SNAPSHOT-jar-with-dependencies.jar
+testJar: jesa-1.0-SNAPSHOT-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: AggregateTests#initializeInstance
+  entryPoint: Jesa.AggregateTests.initializeInstance(Ljava/lang/String;I)V

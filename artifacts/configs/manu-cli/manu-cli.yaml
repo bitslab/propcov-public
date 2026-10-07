@@ -1,0 +1,25 @@
+version: 1
+name: manu-cli
+subProject: cli
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 51b5e1485a55cadee3b9606e7a8a7b357ed3dd2d
+    URL: https://github.com/cldellow/manu.git
+patchName: artifacts/configs/manu-cli/manu-cli.patch
+mainJar: original-manu-cli-0.3.0-SNAPSHOT.jar
+mainJarWithDependencies: manu-cli-0.3.0-SNAPSHOT-jar-with-dependencies.jar
+testJar: manu-cli-0.3.0-SNAPSHOT-tests.jar
+buildSystem:
+  env:
+    JAVA_HOME: /usr/lib/jvm/java-11-openjdk
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: FileParserTest#testRandomInts
+  entryPoint: com.cldellow.manu.cli.FileParserTest.testRandomInts()V

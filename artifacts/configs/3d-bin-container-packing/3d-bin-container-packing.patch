@@ -1,0 +1,252 @@
+diff --git a/core/pom.xml b/core/pom.xml
+index 4e488e0..009ceda 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -26,15 +26,35 @@
+ 			<groupId>com.github.skjolber.3d-bin-container-packing</groupId>
+ 			<artifactId>test</artifactId>
+ 			<scope>test</scope>
+-		</dependency>
++		</dependency>
+ 		<dependency>
+ 			<groupId>org.junit.jupiter</groupId>
+ 			<artifactId>junit-jupiter-api</artifactId>
++			<version>5.10.1</version>
+ 			<scope>test</scope>
+ 		</dependency>
+ 		<dependency>
+ 			<groupId>org.junit.jupiter</groupId>
+ 			<artifactId>junit-jupiter-engine</artifactId>
++			<version>5.10.1</version>
++			<scope>test</scope>
++		</dependency>
++		<dependency>
++			<groupId>org.junit.platform</groupId>
++			<artifactId>junit-platform-launcher</artifactId>
++			<version>1.10.1</version>
++			<scope>test</scope>
++		</dependency>
++		<dependency>
++			<groupId>org.junit.platform</groupId>
++			<artifactId>junit-platform-engine</artifactId>
++			<version>1.10.1</version>
++			<scope>test</scope>
++		</dependency>
++		<dependency>
++			<groupId>org.junit.vintage</groupId>
++			<artifactId>junit-vintage-engine</artifactId>
++			<version>5.10.1</version>
+ 			<scope>test</scope>
+ 		</dependency>
+ 		<dependency>
+@@ -83,15 +103,16 @@
+ 			<plugin>
+ 				<groupId>org.apache.maven.plugins</groupId>
+ 				<artifactId>maven-surefire-plugin</artifactId>
++				<version>3.2.5</version>
+ 			</plugin>
+ 			<plugin>
+ 				<groupId>org.apache.maven.plugins</groupId>
+ 				<artifactId>maven-dependency-plugin</artifactId>
+ 			</plugin>
+-			<plugin>
+-				<groupId>org.jacoco</groupId>
+-				<artifactId>jacoco-maven-plugin</artifactId>
+-			</plugin>
++			<!-- <plugin>                                          -->
++			<!-- 	<groupId>org.jacoco</groupId>                  -->
++			<!-- 	<artifactId>jacoco-maven-plugin</artifactId>   -->
++			<!-- </plugin>                                         -->
+ 			<plugin>
+ 				<groupId>org.apache.maven.plugins</groupId>
+ 				<artifactId>maven-source-plugin</artifactId>
+@@ -100,18 +121,94 @@
+ 				<groupId>org.apache.maven.plugins</groupId>
+ 				<artifactId>maven-javadoc-plugin</artifactId>
+ 			</plugin>
+-			<plugin>
+-				<groupId>org.moditect</groupId>
+-				<artifactId>moditect-maven-plugin</artifactId>
+-			</plugin>
+-			<plugin>
+-				<groupId>org.pitest</groupId>
+-				<artifactId>pitest-maven</artifactId>
+-			</plugin>
++            <!-- <plugin>                                           -->
++			<!-- 	<groupId>org.moditect</groupId>                 -->
++			<!-- 	<artifactId>moditect-maven-plugin</artifactId>  -->
++			<!-- </plugin>			                                -->
++			<!-- <plugin>                                           -->
++			<!-- 	<groupId>org.pitest</groupId>                   -->
++			<!-- 	<artifactId>pitest-maven</artifactId>           -->
++			<!-- </plugin>                                          -->
+ 			<plugin>
+ 				<groupId>com.diffplug.spotless</groupId>
+ 				<artifactId>spotless-maven-plugin</artifactId>
+ 			</plugin>
++            <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-assembly-plugin</artifactId>
++                <version>3.3.0</version>
++
++                <configuration>
++                    <descriptorRefs>
++                        <descriptorRef>jar-with-dependencies</descriptorRef>
++                    </descriptorRefs>
++                </configuration>
++
++                <executions>
++
++                    <execution>
++                        <id>make-assembly</id>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>single</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 2. Using maven assembly to compile the test jar -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <executions>
++                    <execution>
++                        <goals>
++                            <goal>test-jar</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 3. Jar instrumentation for jacoco -->
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <version>0.8.6</version>
++                <executions>
++                    <execution>
++                        <id>default-prepare-agent</id>
++                        <goals>
++                            <goal>prepare-agent</goal>
++                        </goals>
++                    </execution>
++                    <execution>
++                        <id>jacoco-report</id>
++                        <phase>test</phase>
++                        <goals>
++                            <goal>report</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
+ 		</plugins>
+ 	</build>
++
++  <reporting>
++    <plugins>
++            <!-- 4. Reporting for jacoco -->
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <reportSets>
++                    <reportSet>
++                        <reports>
++                            <report>report</report>
++                        </reports>
++                    </reportSet>
++                </reportSets>
++            </plugin>
++    </plugins>
++  </reporting>
+ </project>
+diff --git a/pom.xml b/pom.xml
+index 50399e0..14e92d4 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -228,46 +228,46 @@
+ 						<target>${maven.compiler.target}</target>
+ 					</configuration>
+ 				</plugin>
+-				<plugin>
+-					<groupId>org.apache.maven.plugins</groupId>
+-					<artifactId>maven-surefire-plugin</artifactId>
+-					<version>${maven-surefire-plugin.version}</version>
+-					<configuration>
+-						<forkCount>1.5C</forkCount>
+-						<reuseForks>true</reuseForks>
+-						<redirectTestOutputToFile>true</redirectTestOutputToFile>
+-					</configuration>
+-				</plugin>
++                <!-- <plugin>                                                            -->
++				<!-- 	<groupId>org.apache.maven.plugins</groupId>                      -->
++				<!-- 	<artifactId>maven-surefire-plugin</artifactId>                   -->
++				<!-- 	<version>${maven-surefire-plugin.version}</version>              -->
++				<!-- 	<configuration>                                                  -->
++				<!-- 		<forkCount>1.5C</forkCount>                                  -->
++				<!-- 		<reuseForks>true</reuseForks>                                -->
++				<!-- 		<redirectTestOutputToFile>true</redirectTestOutputToFile>    -->
++				<!-- 	</configuration>                                                 -->
++				<!-- </plugin>                                                           -->
+ 				<plugin>
+ 					<groupId>org.apache.maven.plugins</groupId>
+ 					<artifactId>maven-dependency-plugin</artifactId>
+ 				</plugin>
+-				<plugin>
+-					<groupId>org.jacoco</groupId>
+-					<artifactId>jacoco-maven-plugin</artifactId>
+-					<version>${jacoco-maven-plugin.version}</version>
+-					<configuration>
+-						<excludes>
+-							<exclude>com/github/skjolber/jmh/*</exclude>
+-						</excludes>
+-					</configuration>
+-					<executions>
+-						<execution>
+-							<id>prepare-agent</id>
+-							<phase>initialize</phase>
+-							<goals>
+-								<goal>prepare-agent</goal>
+-							</goals>
+-						</execution>
+-						<execution>
+-							<id>report</id>
+-							<goals>
+-								<goal>report-aggregate</goal>
+-							</goals>
+-							<phase>verify</phase>
+-						</execution>
+-					</executions>
+-				</plugin>
++                <!-- <plugin>                                                 -->
++				<!-- 	<groupId>org.jacoco</groupId>                         -->
++				<!-- 	<artifactId>jacoco-maven-plugin</artifactId>          -->
++				<!-- 	<version>${jacoco-maven-plugin.version}</version>     -->
++				<!-- 	<configuration>                                       -->
++				<!-- 		<excludes>                                        -->
++				<!-- 			<exclude>com/github/skjolber/jmh/*</exclude>  -->
++				<!-- 		</excludes>                                       -->
++				<!-- 	</configuration>                                      -->
++				<!-- 	<executions>                                          -->
++				<!-- 		<execution>                                       -->
++				<!-- 			<id>prepare-agent</id>                        -->
++				<!-- 			<phase>initialize</phase>                     -->
++				<!-- 			<goals>                                       -->
++				<!-- 				<goal>prepare-agent</goal>                -->
++				<!-- 			</goals>                                      -->
++				<!-- 		</execution>                                      -->
++				<!-- 		<execution>                                       -->
++				<!-- 			<id>report</id>                               -->
++				<!-- 			<goals>                                       -->
++				<!-- 				<goal>report-aggregate</goal>             -->
++				<!-- 			</goals>                                      -->
++				<!-- 			<phase>verify</phase>                         -->
++				<!-- 		</execution>                                      -->
++				<!-- 	</executions>                                         -->
++				<!-- </plugin>                                                -->
+ 				<plugin>
+ 					<groupId>org.sonatype.plugins</groupId>
+ 					<artifactId>nexus-staging-maven-plugin</artifactId>

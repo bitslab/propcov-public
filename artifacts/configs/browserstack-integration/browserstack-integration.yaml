@@ -1,0 +1,22 @@
+version: 1
+name: browserstack-integration
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 5c0b2e018d7b33cc084e0be0859cb880a0521dc9
+    URL: https://github.com/jenkinsci/browserstack-integration-plugin.git
+patchName: artifacts/configs/browserstack-integration/browserstack-integration.patch
+mainJar: browserstack-integration.jar
+mainJarWithDependencies: browserstack-integration-jar-with-dependencies.jar
+testJar: browserstack-integration-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: JenkinsBrowserStackLocalTest#testLocalIdentifierGeneration
+  entryPoint: com.browserstack.automate.ci.jenkins.local.JenkinsBrowserStackLocalTest.testLocalIdentifierGeneration(Ljava/lang/String;)V

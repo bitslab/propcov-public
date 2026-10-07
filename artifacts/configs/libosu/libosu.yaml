@@ -1,0 +1,28 @@
+version: 1
+name: libosu
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 7c15a211e812f4cbcc7001ab566576299a415d92
+    URL: https://github.com/zcd/libosu.git
+patchName: artifacts/configs/libosu/libosu.patch
+mainJar: libosu-1.0-SNAPSHOT.jar
+mainJarWithDependencies: libosu-1.0-SNAPSHOT-jar-with-dependencies.jar
+testJar: libosu-1.0-SNAPSHOT-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: DataStringCodecTest#lifebarSampleEncodeDecode
+  entryPoint: com.zerocooldown.libosu.replay.io.DataStringCodecTest.lifebarSampleEncodeDecode(Lcom/zerocooldown/libosu/replay/LifeBarSample;)V
+- name: DataStringCodecTest#momentEncodeDecode
+  entryPoint: com.zerocooldown.libosu.replay.io.DataStringCodecTest.momentEncodeDecode(Lcom/zerocooldown/libosu/replay/Moment;)V
+- name: Uleb128Test#decodeFromEncode
+  entryPoint: com.zerocooldown.libosu.util.Uleb128Test.decodeFromEncode(J)V
+- name: Uleb128Test#encodeFromDecode
+  entryPoint: com.zerocooldown.libosu.util.Uleb128Test.encodeFromDecode([B)V

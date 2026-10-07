@@ -1,0 +1,11 @@
+name: test project
+subProject: core
+URL: https://foo/bar/test.git
+checkoutID: 01e09ee1424be08ec70f3787874118d6638cc63d
+patchName: artifacts/configs/foo/foo.patch
+mainJar: foo.jar
+mainJarWithDependencies: foo-with-dependencies.jar
+testJar: foo-tests.jar
+properties:
+  - name: Foo#PropOne
+    entryPoint: foo.bar.PropOne()V

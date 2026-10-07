@@ -1,0 +1,175 @@
+packageName: edu.uic.bitslab.propcov.core
+description: PropCov default properties
+applyOrder: 1
+props:
+  - name: "PropCov.Project"
+    defaultValue: "null"
+    description: "Set the name of the project."
+
+  - name: "PropCov.SubProject"
+    defaultValue: "null"
+    description: "Set the project's subproject name."
+
+  - name: "PropCov.MainJar"
+    defaultValue: "null"
+    description: "Main Jar"
+
+  - name: "PropCov.MainJarWithDependencies"
+    defaultValue: "null"
+    description: "Main Jar with Dependencies"
+
+  - name: "PropCov.TestJar"
+    defaultValue: "null"
+    description: "Test Jar"
+
+  - name: "PropCov.PatchFile"
+    defaultValue: "null"
+    description: "Patch Filename"
+
+  - name: "PropCov.OutputPath"
+    defaultValue: "null"
+    description: "Location where output should be stored (defaults to output)."
+
+  - name: "PropCov.PackageName"
+    defaultValue: "null"
+    description: "Name of SUT Package."
+
+  - name: "PropCov.PackageNames"
+    defaultValue: "null"
+    description: "CSV list of SUT Package names."
+
+  - name: "PropCov.ArtifactDirectory"
+    defaultValue: "null"
+    description: "Location where artifacts are located."
+
+  - name: "PropCov.BuildSVG"
+    defaultValue: "false"
+    description: "Should the callgraph dot file have an SVG created."
+
+  - name: "PropCov.PathImprovementColorFirst"
+    defaultValue: "green"
+    description: "First path improvement color for heuristic graph."
+
+  - name: "PropCov.PathImprovementColorSecond"
+    defaultValue: "yellow"
+    description: "Second path improvement color for heuristic graph."
+
+  - name: "PropCov.PathImprovementColorThird"
+    defaultValue: "red"
+    description: "Third path improvement color for heuristic graph."
+
+  - name: "PropCov.NodeColorError"
+    defaultValue: "white"
+    description: "Node background color for error nodes."
+
+  - name: "PropCov.NodeColorEntryPoint"
+    defaultValue: "lightgoldenrod"
+    description: "Node background color for entrypoint nodes."
+
+  - name: "PropCov.NodeColorTest"
+    defaultValue: "plum"
+    description: "Node background color for test nodes."
+
+  - name: "PropCov.NodeColorImplied"
+    defaultValue: "skyblue"
+    description: "Node background color for implied nodes."
+
+  - name: "PropCov.NodeColorCoverage0"
+    defaultValue: "lightpink"
+    description: "Node background color for uncovered nodes."
+
+  - name: "PropCov.NodeColorCoverage1"
+    defaultValue: "green1"
+    description: "Node background color for minimally covered nodes."
+
+  - name: "PropCov.NodeColorCoverage2"
+    defaultValue: "green2"
+    description: "Node background color for somewhat covered nodes."
+
+  - name: "PropCov.NodeColorCoverage3"
+    defaultValue: "green3"
+    description: "Node background color for mostly covered nodes."
+
+  - name: "PropCov.NodeColorCoverage4"
+    defaultValue: "green4"
+    description: "Node background color for full covered nodes."
+
+  - name: "PropCov.NodeColorVirtual"
+    defaultValue: "bisque2"
+    description: "Node background color for virtual nodes."
+
+  - name: "PropCov.TimeoutDefault"
+    defaultValue: "0"
+    description: "Default timeout for each PropCov timeout (0 for no time limit)"
+
+  - name: "PropCov.Timeout.patchSUT"
+    defaultValue: "null"
+    description: "Timeout for the PropCov patchSUT Task (0 for no time limit / inherits from TimeoutDefault)"
+
+  - name: "PropCov.Timeout.cleanSUT"
+    defaultValue: "null"
+    description: "Timeout for the PropCov cleanSUT Task (0 for no time limit / inherits from TimeoutDefault)"
+
+  - name: "PropCov.Timeout.buildSUT"
+    defaultValue: "null"
+    description: "Timeout for the PropCov buildSUT Task (0 for no time limit / inherits from TimeoutDefault)"
+
+  - name: "PropCov.Timeout.testPropertySUT"
+    defaultValue: "null"
+    description: "Timeout for the PropCov testPropertySUT Task (0 for no time limit / inherits from TimeoutDefault)"
+
+  - name: "PropCov.Timeout.dotGeneration"
+    defaultValue: "null"
+    description: "Timeout for the PropCov dotGeneration Task (0 for no time limit / inherits from TimeoutDefault)"
+
+  - name: "PropCov.Timeout.buildCallgraph"
+    defaultValue: "null"
+    description: "Timeout for the PropCov buildCallgraph Task (0 for no time limit / inherits from TimeoutDefault)"
+
+  - name: "PropCov.TestPropertyName"
+    defaultValue: "null"
+    description: "Specify a specific test name corresponding to testPropertyEndpoint."
+
+  - name: "PropCov.TestPropertyEndpoint"
+    defaultValue: "null"
+    description: "Specify a specific test endpoint to run."
+
+  - name: "PropCov.TestPropertySubProject"
+    defaultValue: "null"
+    description: "Specify a specific subproject to run the testPropertyEndpoint on."
+
+  - name: "PropCov.Workflow"
+    defaultValue: "null"
+    description: "Select workflow components to run (default runs all workflow items)."
+
+  - name: "PropCov.Source.ExtensionClass"
+    defaultValue: "null"
+    description: "Full class name of the Source extension class to be used (manual defaults to local)."
+
+  - name: "PropCov.Coverage.ExtensionClass"
+    defaultValue: "edu.uic.bitslab.propcov.extensions.coverage.JaCoCo"
+    description: "Full class name (or alias name) of the Coverage extension class to be used."
+
+  - name: "PropCov.Coverage.Properties"
+    defaultValue: "{\"xmlCoverageReport\":\"site/jacoco/jacoco.xml\"}"
+    description: "Properties for Coverage class as JSON string."
+
+  - name: "PropCov.TestFramework.ExtensionClass"
+    defaultValue: "edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck"
+    description: "Full class name of the TestFramework extension class to be used."
+
+  - name: "PropCov.AnalysisFramework.ExtensionClass"
+    defaultValue: "edu.uic.bitslab.propcov.extensions.analysisframework.Opal"
+    description: "Extension class for Analysis Framework."
+
+  - name: "PropCov.LocalDirectory"
+    defaultValue: "null"
+    description: "Directory where the SUT is located on the local system (defaults to ../propcov-sut/<SUT>)."
+
+  - name: "PropCov.TargetPath"
+    defaultValue: "null"
+    description: "Directory where the SUT compiled code is located."
+
+  - name: "PropCov.BuildSystem.ExtensionClass"
+    defaultValue: "edu.uic.bitslab.propcov.extensions.buildsystem.Maven"
+    description: "Extension class to use for BuildSystem"

@@ -1,0 +1,817 @@
+diff --git a/benchmark/pom.xml b/benchmark/pom.xml
+index 660e034a..73733128 100644
+--- a/benchmark/pom.xml
++++ b/benchmark/pom.xml
+@@ -111,10 +111,85 @@
+           </execution>
+         </executions>
+       </plugin>
++      <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++      <plugin>
++        <groupId>org.apache.maven.plugins</groupId>
++        <artifactId>maven-assembly-plugin</artifactId>
++        <version>3.3.0</version>
++
++        <configuration>
++          <descriptorRefs>
++            <descriptorRef>jar-with-dependencies</descriptorRef>
++          </descriptorRefs>
++        </configuration>
++
++        <executions>
++
++          <execution>
++            <id>make-assembly</id>
++            <phase>package</phase>
++            <goals>
++              <goal>single</goal>
++            </goals>
++          </execution>
++        </executions>
++      </plugin>
++
++      <!-- 2. Using maven assembly to compile the test jar -->
++      <plugin>
++        <groupId>org.apache.maven.plugins</groupId>
++        <artifactId>maven-jar-plugin</artifactId>
++        <version>3.2.0</version>
++        <executions>
++          <execution>
++            <goals>
++              <goal>test-jar</goal>
++            </goals>
++          </execution>
++        </executions>
++      </plugin>
++
++      <!-- 3. Jar instrumentation for jacoco -->
++      <plugin>
++        <groupId>org.jacoco</groupId>
++        <artifactId>jacoco-maven-plugin</artifactId>
++        <version>0.8.6</version>
++        <executions>
++          <execution>
++            <id>default-prepare-agent</id>
++            <goals>
++              <goal>prepare-agent</goal>
++            </goals>
++          </execution>
++          <execution>
++            <id>jacoco-report</id>
++            <phase>test</phase>
++            <goals>
++              <goal>report</goal>
++            </goals>
++          </execution>
++        </executions>
++      </plugin>
+     </plugins>
+   </build>
+   <properties>
+     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+     <jmh.version>1.22</jmh.version>
+   </properties>
++  <reporting>
++    <plugins>
++      <!-- 4. Reporting for jacoco -->
++      <plugin>
++        <groupId>org.jacoco</groupId>
++        <artifactId>jacoco-maven-plugin</artifactId>
++        <reportSets>
++          <reportSet>
++            <reports>
++              <report>report</report>
++            </reports>
++          </reportSet>
++        </reportSets>
++      </plugin>
++    </plugins>
++  </reporting>
+ </project>
+diff --git a/cup-maven-plugin/pom.xml b/cup-maven-plugin/pom.xml
+index c6999d4e..30521264 100644
+--- a/cup-maven-plugin/pom.xml
++++ b/cup-maven-plugin/pom.xml
+@@ -22,6 +22,38 @@
+   </developers>
+ 
+   <dependencies>
++
++    <dependency>
++      <groupId>org.junit.jupiter</groupId>
++      <artifactId>junit-jupiter-api</artifactId>
++      <version>5.10.1</version>
++      <scope>test</scope>
++    </dependency>
++    <dependency>
++      <groupId>org.junit.jupiter</groupId>
++      <artifactId>junit-jupiter-engine</artifactId>
++      <version>5.10.1</version>
++      <scope>test</scope>
++    </dependency>
++    <dependency>
++      <groupId>org.junit.platform</groupId>
++      <artifactId>junit-platform-launcher</artifactId>
++      <version>1.10.1</version>
++      <scope>test</scope>
++    </dependency>
++    <dependency>
++      <groupId>org.junit.platform</groupId>
++      <artifactId>junit-platform-engine</artifactId>
++      <version>1.10.1</version>
++      <scope>test</scope>
++    </dependency>
++    <dependency>
++      <groupId>org.junit.vintage</groupId>
++      <artifactId>junit-vintage-engine</artifactId>
++      <version>5.10.1</version>
++      <scope>test</scope>
++    </dependency>
++
+     <dependency>
+       <groupId>com.google.guava</groupId>
+       <artifactId>guava</artifactId>
+@@ -78,4 +110,97 @@
+     </dependency>
+   </dependencies>
+ 
++<build>
++  <plugins>
++    <plugin>
++      <groupId>org.apache.maven.plugins</groupId>
++      <artifactId>maven-compiler-plugin</artifactId>
++    </plugin>
++    <plugin>
++      <groupId>org.apache.maven.plugins</groupId>
++      <artifactId>maven-surefire-plugin</artifactId>
++      <version>3.2.5</version>
++    </plugin>
++    <plugin>
++      <groupId>org.apache.maven.plugins</groupId>
++      <artifactId>maven-dependency-plugin</artifactId>
++    </plugin>
++    <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++    <plugin>
++      <groupId>org.apache.maven.plugins</groupId>
++      <artifactId>maven-assembly-plugin</artifactId>
++      <version>3.3.0</version>
++
++      <configuration>
++        <descriptorRefs>
++          <descriptorRef>jar-with-dependencies</descriptorRef>
++        </descriptorRefs>
++      </configuration>
++
++      <executions>
++
++        <execution>
++          <id>make-assembly</id>
++          <phase>package</phase>
++          <goals>
++            <goal>single</goal>
++          </goals>
++        </execution>
++      </executions>
++    </plugin>
++
++    <!-- 2. Using maven assembly to compile the test jar -->
++    <plugin>
++      <groupId>org.apache.maven.plugins</groupId>
++      <artifactId>maven-jar-plugin</artifactId>
++      <version>3.2.0</version>
++      <executions>
++        <execution>
++          <goals>
++            <goal>test-jar</goal>
++          </goals>
++        </execution>
++      </executions>
++    </plugin>
++
++    <!-- 3. Jar instrumentation for jacoco -->
++    <plugin>
++      <groupId>org.jacoco</groupId>
++      <artifactId>jacoco-maven-plugin</artifactId>
++      <version>0.8.6</version>
++      <executions>
++        <execution>
++          <id>default-prepare-agent</id>
++          <goals>
++            <goal>prepare-agent</goal>
++          </goals>
++        </execution>
++        <execution>
++          <id>jacoco-report</id>
++          <phase>test</phase>
++          <goals>
++            <goal>report</goal>
++          </goals>
++        </execution>
++      </executions>
++    </plugin>
++  </plugins>
++</build>
++
++  <reporting>
++    <plugins>
++      <!-- 4. Reporting for jacoco -->
++      <plugin>
++        <groupId>org.jacoco</groupId>
++        <artifactId>jacoco-maven-plugin</artifactId>
++        <reportSets>
++          <reportSet>
++            <reports>
++              <report>report</report>
++            </reports>
++          </reportSet>
++        </reportSets>
++      </plugin>
++    </plugins>
++  </reporting>
+ </project>
+diff --git a/jflex-maven-plugin/pom.xml b/jflex-maven-plugin/pom.xml
+index 6b1a0ea9..68768f74 100644
+--- a/jflex-maven-plugin/pom.xml
++++ b/jflex-maven-plugin/pom.xml
+@@ -74,6 +74,65 @@
+           <skip>false</skip>
+         </configuration>
+       </plugin>
++      <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++      <plugin>
++        <groupId>org.apache.maven.plugins</groupId>
++        <artifactId>maven-assembly-plugin</artifactId>
++        <version>3.3.0</version>
++
++        <configuration>
++          <descriptorRefs>
++            <descriptorRef>jar-with-dependencies</descriptorRef>
++          </descriptorRefs>
++        </configuration>
++
++        <executions>
++
++          <execution>
++            <id>make-assembly</id>
++            <phase>package</phase>
++            <goals>
++              <goal>single</goal>
++            </goals>
++          </execution>
++        </executions>
++      </plugin>
++
++      <!-- 2. Using maven assembly to compile the test jar -->
++      <plugin>
++        <groupId>org.apache.maven.plugins</groupId>
++        <artifactId>maven-jar-plugin</artifactId>
++        <version>3.2.0</version>
++        <executions>
++          <execution>
++            <goals>
++              <goal>test-jar</goal>
++            </goals>
++          </execution>
++        </executions>
++      </plugin>
++
++      <!-- 3. Jar instrumentation for jacoco -->
++      <plugin>
++        <groupId>org.jacoco</groupId>
++        <artifactId>jacoco-maven-plugin</artifactId>
++        <version>0.8.6</version>
++        <executions>
++          <execution>
++            <id>default-prepare-agent</id>
++            <goals>
++              <goal>prepare-agent</goal>
++            </goals>
++          </execution>
++          <execution>
++            <id>jacoco-report</id>
++            <phase>test</phase>
++            <goals>
++              <goal>report</goal>
++            </goals>
++          </execution>
++        </executions>
++      </plugin>
+     </plugins>
+   </build>
+   <dependencies>
+@@ -143,6 +202,18 @@
+           </reportSet>
+         </reportSets>
+       </plugin>
++      <!-- 4. Reporting for jacoco -->
++      <plugin>
++        <groupId>org.jacoco</groupId>
++        <artifactId>jacoco-maven-plugin</artifactId>
++        <reportSets>
++          <reportSet>
++            <reports>
++              <report>report</report>
++            </reports>
++          </reportSet>
++        </reportSets>
++      </plugin>
+     </plugins>
+   </reporting>
+ </project>
+diff --git a/jflex-unicode-maven-plugin/pom.xml b/jflex-unicode-maven-plugin/pom.xml
+index fbba0a87..c2b1d16e 100644
+--- a/jflex-unicode-maven-plugin/pom.xml
++++ b/jflex-unicode-maven-plugin/pom.xml
+@@ -55,6 +55,65 @@
+           <skipDeploy>true</skipDeploy>
+         </configuration>
+       </plugin>
++      <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++      <plugin>
++        <groupId>org.apache.maven.plugins</groupId>
++        <artifactId>maven-assembly-plugin</artifactId>
++        <version>3.3.0</version>
++
++        <configuration>
++          <descriptorRefs>
++            <descriptorRef>jar-with-dependencies</descriptorRef>
++          </descriptorRefs>
++        </configuration>
++
++        <executions>
++
++          <execution>
++            <id>make-assembly</id>
++            <phase>package</phase>
++            <goals>
++              <goal>single</goal>
++            </goals>
++          </execution>
++        </executions>
++      </plugin>
++
++      <!-- 2. Using maven assembly to compile the test jar -->
++      <plugin>
++        <groupId>org.apache.maven.plugins</groupId>
++        <artifactId>maven-jar-plugin</artifactId>
++        <version>3.2.0</version>
++        <executions>
++          <execution>
++            <goals>
++              <goal>test-jar</goal>
++            </goals>
++          </execution>
++        </executions>
++      </plugin>
++
++      <!-- 3. Jar instrumentation for jacoco -->
++      <plugin>
++        <groupId>org.jacoco</groupId>
++        <artifactId>jacoco-maven-plugin</artifactId>
++        <version>0.8.6</version>
++        <executions>
++          <execution>
++            <id>default-prepare-agent</id>
++            <goals>
++              <goal>prepare-agent</goal>
++            </goals>
++          </execution>
++          <execution>
++            <id>jacoco-report</id>
++            <phase>test</phase>
++            <goals>
++              <goal>report</goal>
++            </goals>
++          </execution>
++        </executions>
++      </plugin>
+     </plugins>
+   </build>
+   <dependencies>
+@@ -67,4 +126,20 @@
+       <artifactId>maven-plugin-annotations</artifactId>
+     </dependency>
+   </dependencies>
++  <reporting>
++    <plugins>
++      <!-- 4. Reporting for jacoco -->
++      <plugin>
++        <groupId>org.jacoco</groupId>
++        <artifactId>jacoco-maven-plugin</artifactId>
++        <reportSets>
++          <reportSet>
++            <reports>
++              <report>report</report>
++            </reports>
++          </reportSet>
++        </reportSets>
++      </plugin>
++    </plugins>
++  </reporting>
+ </project>
+diff --git a/jflex/pom.xml b/jflex/pom.xml
+index 47904b61..185a3790 100644
+--- a/jflex/pom.xml
++++ b/jflex/pom.xml
+@@ -51,6 +51,21 @@
+       <timezone>+1</timezone>
+     </developer>
+   </developers>
++  <reporting>
++      <plugins>
++        <plugin>
++          <groupId>org.jacoco</groupId>
++          <artifactId>jacoco-maven-plugin</artifactId>
++          <reportSets>
++            <reportSet>
++              <reports>
++                <report>report</report>
++              </reports>
++            </reportSet>
++          </reportSets>
++        </plugin>
++      </plugins>
++  </reporting>
+   <dependencies>
+     <dependency>
+       <groupId>com.github.vbmacher</groupId>
+@@ -156,6 +171,34 @@
+             </manifest>
+           </archive>
+         </configuration>
++        <executions>
++          <execution>
++            <goals>
++              <goal>test-jar</goal>
++            </goals>
++          </execution>
++        </executions>
++      </plugin>
++      <plugin>
++        <groupId>org.apache.maven.plugins</groupId>
++        <artifactId>maven-assembly-plugin</artifactId>
++        <version>3.3.0</version>
++
++        <configuration>
++          <descriptorRefs>
++            <descriptorRef>jar-with-dependencies</descriptorRef>
++          </descriptorRefs>
++        </configuration>
++
++        <executions>
++          <execution>
++            <id>make-assembly</id>
++            <phase>package</phase>
++            <goals>
++              <goal>single</goal>
++            </goals>
++          </execution>
++        </executions>
+       </plugin>
+       <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+@@ -231,6 +274,13 @@
+               </excludes>
+             </configuration>
+           </execution>
++          <execution>
++            <id>jacoco-report</id>
++            <phase>test</phase>
++            <goals>
++              <goal>report</goal>
++            </goals>
++          </execution>
+         </executions>
+       </plugin>
+     </plugins>
+diff --git a/pom.xml b/pom.xml
+index f978c093..4a43e8d1 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -59,6 +59,7 @@
+     <module>jflex-maven-plugin</module>
+     <module>testsuite</module>
+     <module>benchmark</module>
++    <module>propcovrun</module>
+   </modules>
+   <mailingLists>
+     <mailingList>
+@@ -195,7 +196,7 @@
+         <plugin>
+           <groupId>org.jacoco</groupId>
+           <artifactId>jacoco-maven-plugin</artifactId>
+-          <version>0.8.2</version>
++          <version>0.8.4</version>
+         </plugin>
+         <plugin>
+           <groupId>de.jflex</groupId>
+@@ -556,6 +557,27 @@
+               </execution>
+             </executions>
+           </plugin>
++          <!-- 3. Jar instrumentation for jacoco -->
++          <plugin>
++            <groupId>org.jacoco</groupId>
++            <artifactId>jacoco-maven-plugin</artifactId>
++            <version>0.8.6</version>
++            <executions>
++              <execution>
++                <id>default-prepare-agent</id>
++                <goals>
++                  <goal>prepare-agent</goal>
++                </goals>
++              </execution>
++              <execution>
++                <id>jacoco-report</id>
++                <phase>test</phase>
++                <goals>
++                  <goal>report</goal>
++                </goals>
++              </execution>
++            </executions>
++          </plugin>
+         </plugins>
+       </build>
+     </profile>
+diff --git a/propcovrun/pom.xml b/propcovrun/pom.xml
+new file mode 100644
+index 00000000..d2a88825
+--- /dev/null
++++ b/propcovrun/pom.xml
+@@ -0,0 +1,136 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xmlns="http://maven.apache.org/POM/4.0.0"
++         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
++    <modelVersion>4.0.0</modelVersion>
++    <parent>
++        <groupId>de.jflex</groupId>
++        <artifactId>jflex-parent</artifactId>
++        <version>1.8.2</version>
++    </parent>
++
++    <artifactId>propcovrun</artifactId>
++    <name>${project.groupId}:${project.artifactId}</name>
++    <url>https://github.com/jflex-de/jflex</url>
++    <packaging>pom</packaging>
++    <properties>
++        <maven.compiler.source>17</maven.compiler.source>
++        <maven.compiler.target>17</maven.compiler.target>
++        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
++    </properties>
++
++    <dependencies>
++<!--        <dependency>-->
++<!--            <groupId>de.jflex</groupId>-->
++<!--            <artifactId>cup-maven-plugin</artifactId>-->
++<!--            <version>1.2</version>-->
++<!--        </dependency>-->
++<!--        <dependency>-->
++<!--            <groupId>de.jflex</groupId>-->
++<!--            <artifactId>jflex-unicode-maven-plugin</artifactId>-->
++<!--            <version>1.8.2</version>-->
++<!--        </dependency>-->
++        <dependency>
++            <groupId>de.jflex</groupId>
++            <artifactId>jflex</artifactId>
++            <version>1.8.2</version>
++        </dependency>
++<!--        <dependency>-->
++<!--            <groupId>de.jflex</groupId>-->
++<!--            <artifactId>jflex-maven-plugin</artifactId>-->
++<!--            <version>1.8.2</version>-->
++<!--        </dependency>-->
++<!--        <dependency>-->
++<!--            <groupId>de.jflex</groupId>-->
++<!--            <artifactId>jflex-testsuite-maven-plugin</artifactId>-->
++<!--            <version>1.8.2</version>-->
++<!--        </dependency>-->
++<!--        <dependency>-->
++<!--            <groupId>de.jflex</groupId>-->
++<!--            <artifactId>benchmark</artifactId>-->
++<!--            <version>1.8.2</version>-->
++<!--        </dependency>-->
++    </dependencies>
++
++
++<!--        <module>cup-maven-plugin</module>
++    <module>jflex-unicode-maven-plugin</module>
++    <module>jflex</module>
++    <module>jflex-maven-plugin</module>
++    <module>testsuite</module>
++    <module>benchmark</module>-->
++
++
++    <build>
++        <plugins>
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <version>0.8.6</version>
++                <configuration>
++                    <fileSets>
++                        <fileSet implementation="org.apache.maven.shared.model.fileset.FileSet">
++                            <directory>${project.build.directory}</directory>
++                            <includes>
++                                <include>*.exec</include>
++                            </includes>
++                        </fileSet>
++                    </fileSets>
++                </configuration>
++                <executions>
++                    <execution>
++                        <id>merge</id>
++                        <phase>test</phase>
++                        <goals>
++                            <goal>merge</goal>
++                        </goals>
++                    </execution>
++                    <execution>
++                        <id>report</id>
++                        <phase>test</phase>
++                        <goals>
++                            <goal>report</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++            <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-assembly-plugin</artifactId>
++                <version>3.3.0</version>
++
++                <configuration>
++                    <descriptorRefs>
++                        <descriptorRef>jar-with-dependencies</descriptorRef>
++                    </descriptorRefs>
++                </configuration>
++
++                <executions>
++
++                    <execution>
++                        <id>make-assembly</id>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>single</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 2. Using maven assembly to compile the test jar -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <executions>
++                    <execution>
++                        <goals>
++                            <goal>test-jar</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++        </plugins>
++    </build>
++</project>
+\ No newline at end of file
+diff --git a/testsuite/jflex-testsuite-maven-plugin/pom.xml b/testsuite/jflex-testsuite-maven-plugin/pom.xml
+index 9edef933..6680b1f2 100644
+--- a/testsuite/jflex-testsuite-maven-plugin/pom.xml
++++ b/testsuite/jflex-testsuite-maven-plugin/pom.xml
+@@ -60,6 +60,65 @@
+           <skip>true</skip>
+         </configuration>
+       </plugin>
++      <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++      <plugin>
++        <groupId>org.apache.maven.plugins</groupId>
++        <artifactId>maven-assembly-plugin</artifactId>
++        <version>3.3.0</version>
++
++        <configuration>
++          <descriptorRefs>
++            <descriptorRef>jar-with-dependencies</descriptorRef>
++          </descriptorRefs>
++        </configuration>
++
++        <executions>
++
++          <execution>
++            <id>make-assembly</id>
++            <phase>package</phase>
++            <goals>
++              <goal>single</goal>
++            </goals>
++          </execution>
++        </executions>
++      </plugin>
++
++      <!-- 2. Using maven assembly to compile the test jar -->
++      <plugin>
++        <groupId>org.apache.maven.plugins</groupId>
++        <artifactId>maven-jar-plugin</artifactId>
++        <version>3.2.0</version>
++        <executions>
++          <execution>
++            <goals>
++              <goal>test-jar</goal>
++            </goals>
++          </execution>
++        </executions>
++      </plugin>
++
++      <!-- 3. Jar instrumentation for jacoco -->
++      <plugin>
++        <groupId>org.jacoco</groupId>
++        <artifactId>jacoco-maven-plugin</artifactId>
++        <version>0.8.6</version>
++        <executions>
++          <execution>
++            <id>default-prepare-agent</id>
++            <goals>
++              <goal>prepare-agent</goal>
++            </goals>
++          </execution>
++          <execution>
++            <id>jacoco-report</id>
++            <phase>test</phase>
++            <goals>
++              <goal>report</goal>
++            </goals>
++          </execution>
++        </executions>
++      </plugin>
+     </plugins>
+   </build>
+   <profiles>
+@@ -110,4 +169,20 @@
+       <artifactId>maven-plugin-annotations</artifactId>
+     </dependency>
+   </dependencies>
++  <reporting>
++    <plugins>
++      <!-- 4. Reporting for jacoco -->
++      <plugin>
++        <groupId>org.jacoco</groupId>
++        <artifactId>jacoco-maven-plugin</artifactId>
++        <reportSets>
++          <reportSet>
++            <reports>
++              <report>report</report>
++            </reports>
++          </reportSet>
++        </reportSets>
++      </plugin>
++    </plugins>
++  </reporting>
+ </project>
+diff --git a/testsuite/pom.xml b/testsuite/pom.xml
+index a893e08f..967a31f1 100644
+--- a/testsuite/pom.xml
++++ b/testsuite/pom.xml
+@@ -40,6 +40,43 @@
+           <skipDeploy>true</skipDeploy>
+         </configuration>
+       </plugin>
++      <!-- 3. Jar instrumentation for jacoco -->
++      <plugin>
++        <groupId>org.jacoco</groupId>
++        <artifactId>jacoco-maven-plugin</artifactId>
++        <version>0.8.6</version>
++        <executions>
++          <execution>
++            <id>default-prepare-agent</id>
++            <goals>
++              <goal>prepare-agent</goal>
++            </goals>
++          </execution>
++          <execution>
++            <id>jacoco-report</id>
++            <phase>test</phase>
++            <goals>
++              <goal>report</goal>
++            </goals>
++          </execution>
++        </executions>
++      </plugin>
+     </plugins>
+   </build>
++  <reporting>
++    <plugins>
++      <!-- 4. Reporting for jacoco -->
++      <plugin>
++        <groupId>org.jacoco</groupId>
++        <artifactId>jacoco-maven-plugin</artifactId>
++        <reportSets>
++          <reportSet>
++            <reports>
++              <report>report</report>
++            </reports>
++          </reportSet>
++        </reportSets>
++      </plugin>
++    </plugins>
++  </reporting>
+ </project>

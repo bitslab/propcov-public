@@ -1,0 +1,133 @@
+version: 1
+name: funcj-core
+subProject: core
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 83c2fea25ffcd85352c0e6d0925dfc60c5a415d5
+    URL: https://github.com/typemeta/funcj.git
+patchName: artifacts/configs/funcj-core/funcj-core.patch
+mainJar: funcj-core-0.6.19-SNAPSHOT.jar
+mainJarWithDependencies: funcj-core-0.6.19-SNAPSHOT-jar-with-dependencies.jar
+testJar: funcj-core-0.6.19-SNAPSHOT-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+  properties:
+    AnalysisType: CFA0
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: TryTest#andMap
+  entryPoint: org.typemeta.funcj.control.TryTest.andMap(II)V
+- name: TryTest#apply
+  entryPoint: org.typemeta.funcj.control.TryTest.apply(C)V
+- name: TryTest#flatMap
+  entryPoint: org.typemeta.funcj.control.TryTest.flatMap(C)V
+- name: TryTest#fold
+  entryPoint: org.typemeta.funcj.control.TryTest.fold(C)V
+- name: TryTest#handle
+  entryPoint: org.typemeta.funcj.control.TryTest.handle(C)V
+- name: TryTest#isSuccess
+  entryPoint: org.typemeta.funcj.control.TryTest.isSuccess(C)V
+- name: TryTest#kleisliIsAssociative
+  entryPoint: org.typemeta.funcj.control.TryTest.kleisliIsAssociative(I)V
+- name: TryTest#kleisliLeftIdentity
+  entryPoint: org.typemeta.funcj.control.TryTest.kleisliLeftIdentity(I)V
+- name: TryTest#kleisliRightIdentity
+  entryPoint: org.typemeta.funcj.control.TryTest.kleisliRightIdentity(I)V
+- name: TryTest#map
+  entryPoint: org.typemeta.funcj.control.TryTest.map(C)V
+- name: TryTest#match
+  entryPoint: org.typemeta.funcj.control.TryTest.match(C)V
+- name: StateTest#kleisliIsAssociative
+  entryPoint: org.typemeta.funcj.control.StateTest.kleisliIsAssociative(D)V
+- name: StateTest#kleisliLeftIdentity
+  entryPoint: org.typemeta.funcj.control.StateTest.kleisliLeftIdentity(D)V
+- name: StateTest#kleisliRightIdentity
+  entryPoint: org.typemeta.funcj.control.StateTest.kleisliRightIdentity(D)V
+- name: StateTest#testState
+  entryPoint: org.typemeta.funcj.control.StateTest.testState(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+- name: StateTest#testState2
+  entryPoint: org.typemeta.funcj.control.StateTest.testState2(Ljava/lang/String;Ljava/lang/String;)V
+- name: StateRTest#kleisliIsAssociative
+  entryPoint: org.typemeta.funcj.control.StateRTest.kleisliIsAssociative(D)V
+- name: StateRTest#kleisliLeftIdentity
+  entryPoint: org.typemeta.funcj.control.StateRTest.kleisliLeftIdentity(D)V
+- name: StateRTest#kleisliRightIdentity
+  entryPoint: org.typemeta.funcj.control.StateRTest.kleisliRightIdentity(D)V
+- name: StateRTest#testStateR
+  entryPoint: org.typemeta.funcj.control.StateRTest.testStateR(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+- name: StateRTest#testStateR2
+  entryPoint: org.typemeta.funcj.control.StateRTest.testStateR2(Ljava/lang/String;Ljava/lang/String;)V
+- name: OptionTest#apply
+  entryPoint: org.typemeta.funcj.control.OptionTest.apply(C)V
+- name: OptionTest#asOptional
+  entryPoint: org.typemeta.funcj.control.OptionTest.asOptional(C)V
+- name: OptionTest#flatMap
+  entryPoint: org.typemeta.funcj.control.OptionTest.flatMap(C)V
+- name: OptionTest#fold
+  entryPoint: org.typemeta.funcj.control.OptionTest.fold(C)V
+- name: OptionTest#handle
+  entryPoint: org.typemeta.funcj.control.OptionTest.handle(C)V
+- name: OptionTest#issome
+  entryPoint: org.typemeta.funcj.control.OptionTest.issome(C)V
+- name: OptionTest#kleisliIsAssociative
+  entryPoint: org.typemeta.funcj.control.OptionTest.kleisliIsAssociative(I)V
+- name: OptionTest#kleisliLeftIdentity
+  entryPoint: org.typemeta.funcj.control.OptionTest.kleisliLeftIdentity(I)V
+- name: OptionTest#kleisliRightIdentity
+  entryPoint: org.typemeta.funcj.control.OptionTest.kleisliRightIdentity(I)V
+- name: OptionTest#map
+  entryPoint: org.typemeta.funcj.control.OptionTest.map(C)V
+- name: OptionTest#match
+  entryPoint: org.typemeta.funcj.control.OptionTest.match(C)V
+- name: ValidatedTest#apply
+  entryPoint: org.typemeta.funcj.control.ValidatedTest.apply(C)V
+- name: ValidatedTest#fold
+  entryPoint: org.typemeta.funcj.control.ValidatedTest.fold(C)V
+- name: ValidatedTest#handle
+  entryPoint: org.typemeta.funcj.control.ValidatedTest.handle(C)V
+- name: ValidatedTest#isSuccess
+  entryPoint: org.typemeta.funcj.control.ValidatedTest.isSuccess(C)V
+- name: ValidatedTest#map
+  entryPoint: org.typemeta.funcj.control.ValidatedTest.map(C)V
+- name: ValidatedTest#match
+  entryPoint: org.typemeta.funcj.control.ValidatedTest.match(C)V
+- name: EitherTest#apply
+  entryPoint: org.typemeta.funcj.control.EitherTest.apply(C)V
+- name: EitherTest#flatMap
+  entryPoint: org.typemeta.funcj.control.EitherTest.flatMap(C)V
+- name: EitherTest#fold
+  entryPoint: org.typemeta.funcj.control.EitherTest.fold(C)V
+- name: EitherTest#handle
+  entryPoint: org.typemeta.funcj.control.EitherTest.handle(C)V
+- name: EitherTest#isRight
+  entryPoint: org.typemeta.funcj.control.EitherTest.isRight(C)V
+- name: EitherTest#kleisliIsAssociative
+  entryPoint: org.typemeta.funcj.control.EitherTest.kleisliIsAssociative(I)V
+- name: EitherTest#kleisliLeftIdentity
+  entryPoint: org.typemeta.funcj.control.EitherTest.kleisliLeftIdentity(I)V
+- name: EitherTest#kleisliRightIdentity
+  entryPoint: org.typemeta.funcj.control.EitherTest.kleisliRightIdentity(I)V
+- name: EitherTest#map
+  entryPoint: org.typemeta.funcj.control.EitherTest.map(C)V
+- name: EitherTest#mapLeft
+  entryPoint: org.typemeta.funcj.control.EitherTest.mapLeft(C)V
+- name: EitherTest#match
+  entryPoint: org.typemeta.funcj.control.EitherTest.match(C)V
+- name: ReaderMTest#flatMap
+  entryPoint: org.typemeta.funcj.control.ReaderMTest.flatMap(I)V
+- name: ReaderMTest#kleisliIsAssociative
+  entryPoint: org.typemeta.funcj.control.ReaderMTest.kleisliIsAssociative(II)V
+- name: ReaderMTest#kleisliLeftIdentity
+  entryPoint: org.typemeta.funcj.control.ReaderMTest.kleisliLeftIdentity(II)V
+- name: ReaderMTest#kleisliRightIdentity
+  entryPoint: org.typemeta.funcj.control.ReaderMTest.kleisliRightIdentity(II)V
+- name: LazyTest#testGet
+  entryPoint: org.typemeta.funcj.data.LazyTest.testGet(Ljava/lang/String;)V
+- name: LazyTest#testTSGet
+  entryPoint: org.typemeta.funcj.data.LazyTest.testTSGet(Ljava/lang/String;)V

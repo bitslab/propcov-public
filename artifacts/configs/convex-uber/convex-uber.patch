@@ -1,0 +1,834 @@
+diff --git a/convex-benchmarks/pom.xml b/convex-benchmarks/pom.xml
+index bd399990f..7a59cb3a5 100644
+--- a/convex-benchmarks/pom.xml
++++ b/convex-benchmarks/pom.xml
+@@ -18,6 +18,19 @@
+ 	<build>
+ 		<finalName>convex-benchmarks</finalName>
+ 		<plugins>
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-surefire-plugin</artifactId>
++				<version>3.2.5</version>
++			</plugin>
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-dependency-plugin</artifactId>
++			</plugin>
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-source-plugin</artifactId>
++			</plugin>
+ 			<plugin>
+ 				<groupId>org.apache.maven.plugins</groupId>
+ 				<artifactId>maven-compiler-plugin</artifactId>
+@@ -59,6 +72,64 @@
+ 					</execution>
+ 				</executions>
+ 			</plugin>
++<!--			<plugin>-->
++<!--				<groupId>org.apache.maven.plugins</groupId>-->
++<!--				<artifactId>maven-assembly-plugin</artifactId>-->
++<!--				<version>3.3.0</version>-->
++
++<!--				<configuration>-->
++<!--					<descriptorRefs>-->
++<!--						<descriptorRef>jar-with-dependencies</descriptorRef>-->
++<!--					</descriptorRefs>-->
++<!--				</configuration>-->
++
++<!--				<executions>-->
++
++<!--					<execution>-->
++<!--						<id>make-assembly</id>-->
++<!--						<phase>package</phase>-->
++<!--						<goals>-->
++<!--							<goal>single</goal>-->
++<!--						</goals>-->
++<!--					</execution>-->
++<!--				</executions>-->
++<!--			</plugin>-->
++
++			<!-- 2. Using maven assembly to compile the test jar -->
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-jar-plugin</artifactId>
++				<version>3.2.0</version>
++				<executions>
++					<execution>
++						<goals>
++							<goal>test-jar</goal>
++						</goals>
++					</execution>
++				</executions>
++			</plugin>
++
++			<!-- 3. Jar instrumentation for jacoco -->
++			<plugin>
++				<groupId>org.jacoco</groupId>
++				<artifactId>jacoco-maven-plugin</artifactId>
++				<version>0.8.6</version>
++				<executions>
++					<execution>
++						<id>default-prepare-agent</id>
++						<goals>
++							<goal>prepare-agent</goal>
++						</goals>
++					</execution>
++					<execution>
++						<id>jacoco-report</id>
++						<phase>test</phase>
++						<goals>
++							<goal>report</goal>
++						</goals>
++					</execution>
++				</executions>
++			</plugin>
+ 		</plugins>
+ 	</build>
+ 
+@@ -79,6 +150,52 @@
+ 			<version>${jmh.version}</version>
+ 			<optional>true</optional>
+ 		</dependency>
+-
++		<dependency>
++			<groupId>org.junit.jupiter</groupId>
++			<artifactId>junit-jupiter-api</artifactId>
++			<version>5.10.1</version>
++			<scope>test</scope>
++		</dependency>
++		<dependency>
++			<groupId>org.junit.jupiter</groupId>
++			<artifactId>junit-jupiter-engine</artifactId>
++			<version>5.10.1</version>
++			<scope>test</scope>
++		</dependency>
++		<dependency>
++			<groupId>org.junit.platform</groupId>
++			<artifactId>junit-platform-launcher</artifactId>
++			<version>1.10.1</version>
++			<scope>test</scope>
++		</dependency>
++		<dependency>
++			<groupId>org.junit.platform</groupId>
++			<artifactId>junit-platform-engine</artifactId>
++			<version>1.10.1</version>
++			<scope>test</scope>
++		</dependency>
++		<dependency>
++			<groupId>org.junit.vintage</groupId>
++			<artifactId>junit-vintage-engine</artifactId>
++			<version>5.10.1</version>
++			<scope>test</scope>
++		</dependency>
+ 	</dependencies>
++
++	<reporting>
++		<plugins>
++			<!-- 4. Reporting for jacoco -->
++			<plugin>
++				<groupId>org.jacoco</groupId>
++				<artifactId>jacoco-maven-plugin</artifactId>
++				<reportSets>
++					<reportSet>
++						<reports>
++							<report>report</report>
++						</reports>
++					</reportSet>
++				</reportSets>
++			</plugin>
++		</plugins>
++	</reporting>
+ </project>
+diff --git a/convex-cli/pom.xml b/convex-cli/pom.xml
+index 0c15a65b5..69fe0132a 100644
+--- a/convex-cli/pom.xml
++++ b/convex-cli/pom.xml
+@@ -29,43 +29,60 @@
+ 	</pluginRepositories>
+ 	<build>
+ 		<plugins>
++<!--			<plugin>-->
++<!--				<artifactId>maven-assembly-plugin</artifactId>-->
++<!--				<version>3.3.0</version>-->
++<!--				<configuration>-->
++<!--					<outputDirectory>${project.directory}</outputDirectory>-->
++<!--					<archive>-->
++<!--						<manifest>-->
++<!--							<mainClass>convex.cli.Main</mainClass>-->
++<!--						</manifest>-->
++<!--					</archive>-->
++<!--					<descriptorRefs>-->
++<!--						<descriptorRef>jar-with-dependencies</descriptorRef>-->
++<!--					</descriptorRefs>-->
++<!--					<finalName>convex-cli</finalName>-->
++<!--					&lt;!&ndash; We want differentiated outputs  &ndash;&gt;-->
++<!--					<appendAssemblyId>false</appendAssemblyId>-->
++<!--				</configuration>-->
++<!--				<executions>-->
++<!--					<execution>-->
++<!--						<id>create-archive</id>-->
++<!--						<phase>package</phase>-->
++<!--						<goals>-->
++<!--							<goal>single</goal>-->
++<!--						</goals>-->
++<!--					</execution>-->
++<!--				</executions>-->
++<!--			</plugin>-->
+ 			<plugin>
+-				<artifactId>maven-assembly-plugin</artifactId>
+-				<version>3.3.0</version>
+-				<configuration>
+-					<outputDirectory>${project.directory}</outputDirectory>
+-					<archive>
+-						<manifest>
+-							<mainClass>convex.cli.Main</mainClass>
+-						</manifest>
+-					</archive>
+-					<descriptorRefs>
+-						<descriptorRef>jar-with-dependencies</descriptorRef>
+-					</descriptorRefs>
+-					<finalName>convex-cli</finalName>
+-					<!-- We want differentiated outputs  -->
+-					<appendAssemblyId>false</appendAssemblyId>
+-				</configuration>
+-				<executions>
+-					<execution>
+-						<id>create-archive</id>
+-						<phase>package</phase>
+-						<goals>
+-							<goal>single</goal>
+-						</goals>
+-					</execution>
+-				</executions>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-compiler-plugin</artifactId>
++			</plugin>
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-surefire-plugin</artifactId>
++				<version>3.2.5</version>
++			</plugin>
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-dependency-plugin</artifactId>
++			</plugin>
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-source-plugin</artifactId>
+ 			</plugin>
+ 			<plugin>
+ 				<groupId>org.asciidoctor</groupId>
+ 				<artifactId>asciidoctor-maven-plugin</artifactId>
+ 				<version>2.2.1</version>
+ 				<dependencies>
+-					<dependency>
+-						<groupId>io.spring.asciidoctor</groupId>
+-						<artifactId>spring-asciidoctor-extensions-block-switch</artifactId>
+-						<version>${asciidoctor.spring.version}</version>
+-					</dependency>
++<!--					<dependency>-->
++<!--						<groupId>io.spring.asciidoctor</groupId>-->
++<!--						<artifactId>spring-asciidoctor-extensions-block-switch</artifactId>-->
++<!--						<version>${asciidoctor.spring.version}</version>-->
++<!--					</dependency>-->
+ 					<dependency>
+ 						<groupId>org.asciidoctor</groupId>
+ 						<artifactId>asciidoctorj-pdf</artifactId>
+@@ -96,6 +113,65 @@
+ 						</configuration> </execution> -->
+ 				</executions>
+ 			</plugin>
++			<!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-assembly-plugin</artifactId>
++				<version>3.3.0</version>
++
++				<configuration>
++					<descriptorRefs>
++						<descriptorRef>jar-with-dependencies</descriptorRef>
++					</descriptorRefs>
++				</configuration>
++
++				<executions>
++
++					<execution>
++						<id>make-assembly</id>
++						<phase>package</phase>
++						<goals>
++							<goal>single</goal>
++						</goals>
++					</execution>
++				</executions>
++			</plugin>
++
++			<!-- 2. Using maven assembly to compile the test jar -->
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-jar-plugin</artifactId>
++				<version>3.2.0</version>
++				<executions>
++					<execution>
++						<goals>
++							<goal>test-jar</goal>
++						</goals>
++					</execution>
++				</executions>
++			</plugin>
++
++			<!-- 3. Jar instrumentation for jacoco -->
++			<plugin>
++				<groupId>org.jacoco</groupId>
++				<artifactId>jacoco-maven-plugin</artifactId>
++				<version>0.8.6</version>
++				<executions>
++					<execution>
++						<id>default-prepare-agent</id>
++						<goals>
++							<goal>prepare-agent</goal>
++						</goals>
++					</execution>
++					<execution>
++						<id>jacoco-report</id>
++						<phase>test</phase>
++						<goals>
++							<goal>report</goal>
++						</goals>
++					</execution>
++				</executions>
++			</plugin>
+ 		</plugins>
+ 		<pluginManagement>
+ 			<plugins>
+@@ -210,4 +286,21 @@
+ 			<version>${logback.version}</version>
+ 		</dependency>
+ 	</dependencies>
++
++	<reporting>
++		<plugins>
++			<!-- 4. Reporting for jacoco -->
++			<plugin>
++				<groupId>org.jacoco</groupId>
++				<artifactId>jacoco-maven-plugin</artifactId>
++				<reportSets>
++					<reportSet>
++						<reports>
++							<report>report</report>
++						</reports>
++					</reportSet>
++				</reportSets>
++			</plugin>
++		</plugins>
++	</reporting>
+ </project>
+diff --git a/convex-core/pom.xml b/convex-core/pom.xml
+index 471f81bfe..3f83db912 100644
+--- a/convex-core/pom.xml
++++ b/convex-core/pom.xml
+@@ -32,6 +32,59 @@
+ 					</execution>
+ 				</executions>
+ 			</plugin>
++			<plugin>
++				<groupId>org.jacoco</groupId>
++				<artifactId>jacoco-maven-plugin</artifactId>
++				<version>0.8.6</version>
++				<executions>
++					<execution>
++						<id>default-prepare-agent</id>
++						<goals>
++							<goal>prepare-agent</goal>
++						</goals>
++					</execution>
++					<execution>
++						<id>jacoco-report</id>
++						<phase>test</phase>
++						<goals>
++							<goal>report</goal>
++						</goals>
++					</execution>
++				</executions>
++			</plugin>
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-assembly-plugin</artifactId>
++				<version>3.3.0</version>
++
++				<configuration>
++					<descriptorRefs>
++						<descriptorRef>jar-with-dependencies</descriptorRef>
++					</descriptorRefs>
++				</configuration>
++
++				<executions>
++					<execution>
++						<id>make-assembly</id>
++						<phase>package</phase>
++						<goals>
++							<goal>single</goal>
++						</goals>
++					</execution>
++				</executions>
++			</plugin>
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-jar-plugin</artifactId>
++				<version>3.2.0</version>
++				<executions>
++					<execution>
++						<goals>
++							<goal>test-jar</goal>
++						</goals>
++					</execution>
++				</executions>
++			</plugin>
+ 		</plugins>
+ 		<resources>
+ 			<resource>
+@@ -44,6 +97,22 @@
+ 		</resources>
+ 	</build>
+ 
++	<reporting>
++		<plugins>
++			<plugin>
++				<groupId>org.jacoco</groupId>
++				<artifactId>jacoco-maven-plugin</artifactId>
++				<reportSets>
++					<reportSet>
++						<reports>
++							<report>report</report>
++						</reports>
++					</reportSet>
++				</reportSets>
++			</plugin>
++		</plugins>
++	</reporting>
++
+ 	<dependencies>
+ 		<dependency>
+ 			<groupId>org.bouncycastle</groupId>
+diff --git a/convex-gui/pom.xml b/convex-gui/pom.xml
+index ee91a26ca..148407f4f 100644
+--- a/convex-gui/pom.xml
++++ b/convex-gui/pom.xml
+@@ -16,6 +16,23 @@
+ 
+ 	<build>
+ 		<plugins>
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-compiler-plugin</artifactId>
++			</plugin>
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-surefire-plugin</artifactId>
++				<version>3.2.5</version>
++			</plugin>
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-dependency-plugin</artifactId>
++			</plugin>
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-source-plugin</artifactId>
++			</plugin>
+ 			<plugin>
+ 				<artifactId>maven-assembly-plugin</artifactId>
+ 				<version>3.3.0</version>
+@@ -41,6 +58,65 @@
+ 					</execution>
+ 				</executions>
+ 			</plugin>
++			<!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++<!--			<plugin>-->
++<!--				<groupId>org.apache.maven.plugins</groupId>-->
++<!--				<artifactId>maven-assembly-plugin</artifactId>-->
++<!--				<version>3.3.0</version>-->
++
++<!--				<configuration>-->
++<!--					<descriptorRefs>-->
++<!--						<descriptorRef>jar-with-dependencies</descriptorRef>-->
++<!--					</descriptorRefs>-->
++<!--				</configuration>-->
++
++<!--				<executions>-->
++
++<!--					<execution>-->
++<!--						<id>make-assembly</id>-->
++<!--						<phase>package</phase>-->
++<!--						<goals>-->
++<!--							<goal>single</goal>-->
++<!--						</goals>-->
++<!--					</execution>-->
++<!--				</executions>-->
++<!--			</plugin>-->
++
++			<!-- 2. Using maven assembly to compile the test jar -->
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-jar-plugin</artifactId>
++				<version>3.2.0</version>
++				<executions>
++					<execution>
++						<goals>
++							<goal>test-jar</goal>
++						</goals>
++					</execution>
++				</executions>
++			</plugin>
++
++			<!-- 3. Jar instrumentation for jacoco -->
++			<plugin>
++				<groupId>org.jacoco</groupId>
++				<artifactId>jacoco-maven-plugin</artifactId>
++				<version>0.8.6</version>
++				<executions>
++					<execution>
++						<id>default-prepare-agent</id>
++						<goals>
++							<goal>prepare-agent</goal>
++						</goals>
++					</execution>
++					<execution>
++						<id>jacoco-report</id>
++						<phase>test</phase>
++						<goals>
++							<goal>report</goal>
++						</goals>
++					</execution>
++				</executions>
++			</plugin>
+ 		</plugins>
+ 	</build>
+ 
+diff --git a/convex-peer/pom.xml b/convex-peer/pom.xml
+index b63435d8d..b543b1006 100644
+--- a/convex-peer/pom.xml
++++ b/convex-peer/pom.xml
+@@ -18,17 +18,112 @@
+ 
+ 	<build>
+ 		<plugins>
+-	
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-compiler-plugin</artifactId>
++			</plugin>
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-surefire-plugin</artifactId>
++				<version>3.2.5</version>
++			</plugin>
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-dependency-plugin</artifactId>
++			</plugin>
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-source-plugin</artifactId>
++			</plugin>
++			<!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-assembly-plugin</artifactId>
++				<version>3.3.0</version>
++
++				<configuration>
++					<descriptorRefs>
++						<descriptorRef>jar-with-dependencies</descriptorRef>
++					</descriptorRefs>
++				</configuration>
++
++				<executions>
++
++					<execution>
++						<id>make-assembly</id>
++						<phase>package</phase>
++						<goals>
++							<goal>single</goal>
++						</goals>
++					</execution>
++				</executions>
++			</plugin>
++
++			<!-- 2. Using maven assembly to compile the test jar -->
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-jar-plugin</artifactId>
++				<version>3.2.0</version>
++				<executions>
++					<execution>
++						<goals>
++							<goal>test-jar</goal>
++						</goals>
++					</execution>
++				</executions>
++			</plugin>
++
++			<!-- 3. Jar instrumentation for jacoco -->
++			<plugin>
++				<groupId>org.jacoco</groupId>
++				<artifactId>jacoco-maven-plugin</artifactId>
++				<version>0.8.6</version>
++				<executions>
++					<execution>
++						<id>default-prepare-agent</id>
++						<goals>
++							<goal>prepare-agent</goal>
++						</goals>
++					</execution>
++					<execution>
++						<id>jacoco-report</id>
++						<phase>test</phase>
++						<goals>
++							<goal>report</goal>
++						</goals>
++					</execution>
++				</executions>
++			</plugin>
+ 		</plugins>
+ 	</build>
+-
++	<reporting>
++		<plugins>
++			<!-- 4. Reporting for jacoco -->
++			<plugin>
++				<groupId>org.jacoco</groupId>
++				<artifactId>jacoco-maven-plugin</artifactId>
++				<reportSets>
++					<reportSet>
++						<reports>
++							<report>report</report>
++						</reports>
++					</reportSet>
++				</reportSets>
++			</plugin>
++		</plugins>
++	</reporting>
+ 	<dependencies>
+ 		<dependency>
+ 			<groupId>world.convex</groupId>
+ 			<artifactId>convex-core</artifactId>
+ 			<version>${convex.version}</version>
+ 		</dependency>
+-	
++		<dependency>
++			<groupId>org.junit.jupiter</groupId>
++			<artifactId>junit-jupiter-api</artifactId>
++			<version>${junit.version}</version>
++			<scope>test</scope>
++		</dependency>
+ 		<dependency>
+ 			<groupId>org.junit.jupiter</groupId>
+ 			<artifactId>junit-jupiter-engine</artifactId>
+@@ -38,7 +133,19 @@
+ 		<dependency>
+ 			<groupId>org.junit.vintage</groupId>
+ 			<artifactId>junit-vintage-engine</artifactId>
+-			<version>${junit.version}</version>
++			<version>5.10.1</version>
++			<scope>test</scope>
++		</dependency>
++		<dependency>
++			<groupId>org.junit.platform</groupId>
++			<artifactId>junit-platform-launcher</artifactId>
++			<version>1.10.1</version>
++			<scope>test</scope>
++		</dependency>
++		<dependency>
++			<groupId>org.junit.platform</groupId>
++			<artifactId>junit-platform-engine</artifactId>
++			<version>1.10.1</version>
+ 			<scope>test</scope>
+ 		</dependency>
+ 		<dependency>
+diff --git a/pom.xml b/pom.xml
+index 27cb341c7..75e4052ea 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -17,6 +17,7 @@
+ 		<module>convex-gui</module>
+ 		<module>convex-peer</module>
+ 		<module>convex-benchmarks</module>
++		<module>propcovrun</module>
+ 	</modules>
+ 
+ 	<properties>
+@@ -24,7 +25,7 @@
+ 		<maven.compiler.source>11</maven.compiler.source>
+ 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+ 		<jmh.version>1.32</jmh.version>
+-		<junit.version>5.7.1</junit.version>
++		<junit.version>5.10.1</junit.version>
+ 		<slf4j.version>1.7.31</slf4j.version>
+ 		<convex.version>${project.version}</convex.version>
+ 		<!--Freeze this for reproducible builds. -->
+@@ -180,7 +181,26 @@
+ 					</execution>
+ 				</executions>
+ 			</plugin>
+-
++			<plugin>
++				<groupId>org.jacoco</groupId>
++				<artifactId>jacoco-maven-plugin</artifactId>
++				<version>0.8.6</version>
++				<executions>
++					<execution>
++						<id>default-prepare-agent</id>
++						<goals>
++							<goal>prepare-agent</goal>
++						</goals>
++					</execution>
++					<execution>
++						<id>jacoco-report</id>
++						<phase>test</phase>
++						<goals>
++							<goal>report</goal>
++						</goals>
++					</execution>
++				</executions>
++			</plugin>
+ 			<plugin>
+ 				<groupId>org.sonatype.plugins</groupId>
+ 				<artifactId>nexus-staging-maven-plugin</artifactId>
+@@ -199,7 +219,7 @@
+ 				<plugin>
+ 					<groupId>org.apache.maven.plugins</groupId>
+ 					<artifactId>maven-surefire-plugin</artifactId>
+-					<version>3.0.0-M4</version>
++					<version>3.2.5</version>
+ 				</plugin>
+ 			</plugins>
+ 		</pluginManagement>
+diff --git a/propcovrun/pom.xml b/propcovrun/pom.xml
+new file mode 100644
+index 000000000..ac7064bed
+--- /dev/null
++++ b/propcovrun/pom.xml
+@@ -0,0 +1,121 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xmlns="http://maven.apache.org/POM/4.0.0"
++         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
++    <modelVersion>4.0.0</modelVersion>
++    <parent>
++        <groupId>world.convex</groupId>
++        <artifactId>convex</artifactId>
++        <version>0.7.1</version>
++    </parent>
++    <name>${project.groupId}:${project.artifactId}</name>
++    <artifactId>propcovrun</artifactId>
++    <packaging>pom</packaging>
++    <url>https://github.com/Convex-Dev/convex</url>
++    <properties>
++        <maven.compiler.source>17</maven.compiler.source>
++        <maven.compiler.target>17</maven.compiler.target>
++        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
++    </properties>
++
++    <dependencies>
++        <dependency>
++            <groupId>world.convex</groupId>
++            <artifactId>convex-core</artifactId>
++            <version>0.7.1</version>
++        </dependency>
++        <dependency>
++            <groupId>world.convex</groupId>
++            <artifactId>convex-cli</artifactId>
++            <version>0.7.1</version>
++        </dependency>
++        <dependency>
++            <groupId>world.convex</groupId>
++            <artifactId>convex-peer</artifactId>
++            <version>0.7.1</version>
++        </dependency>
++        <dependency>
++            <groupId>world.convex</groupId>
++            <artifactId>convex-benchmarks</artifactId>
++            <version>0.7.1</version>
++        </dependency>
++        <dependency>
++            <groupId>world.convex</groupId>
++            <artifactId>convex-gui</artifactId>
++            <version>0.7.1</version>
++        </dependency>
++    </dependencies>
++
++    <build>
++        <plugins>
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <version>0.8.6</version>
++                <configuration>
++                    <fileSets>
++                        <fileSet implementation="org.apache.maven.shared.model.fileset.FileSet">
++                            <directory>${project.build.directory}</directory>
++                            <includes>
++                                <include>*.exec</include>
++                            </includes>
++                        </fileSet>
++                    </fileSets>
++                </configuration>
++                <executions>
++                    <execution>
++                        <id>merge</id>
++                        <phase>test</phase>
++                        <goals>
++                            <goal>merge</goal>
++                        </goals>
++                    </execution>
++                    <execution>
++                        <id>report</id>
++                        <phase>test</phase>
++                        <goals>
++                            <goal>report</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++            <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-assembly-plugin</artifactId>
++                <version>3.3.0</version>
++
++                <configuration>
++                    <descriptorRefs>
++                        <descriptorRef>jar-with-dependencies</descriptorRef>
++                    </descriptorRefs>
++                </configuration>
++
++                <executions>
++
++                    <execution>
++                        <id>make-assembly</id>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>single</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 2. Using maven assembly to compile the test jar -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <executions>
++                    <execution>
++                        <goals>
++                            <goal>test-jar</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++        </plugins>
++    </build>
++</project>
+\ No newline at end of file

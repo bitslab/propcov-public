@@ -1,0 +1,24 @@
+version: 1
+name: logish-fixed
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 42a2abd929d81399aa2a04f2dccb47c458791c52
+    URL: https://github.com/dragan-ivanovic/logish.git
+patchName: artifacts/configs/logish-fixed/logish-fixed.patch
+mainJar: logish-0.5.1-SNAPSHOT.jar
+mainJarWithDependencies: logish-0.5.1-SNAPSHOT-jar-with-dependencies.jar
+testJar: logish-0.5.1-SNAPSHOT-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: IntMapTests#testDeletion
+  entryPoint: org.cellx.logishTest.IntMapTests.testDeletion(Ljava/util/HashSet;)V
+- name: IntMapTests#testInsertion
+  entryPoint: org.cellx.logishTest.IntMapTests.testInsertion(Ljava/util/HashSet;)V

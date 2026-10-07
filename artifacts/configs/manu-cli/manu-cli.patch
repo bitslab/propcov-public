@@ -1,0 +1,471 @@
+diff --git a/bin/lib.sh b/bin/lib.sh
+index 69621fd..d08e79f 100644
+--- a/bin/lib.sh
++++ b/bin/lib.sh
+@@ -5,7 +5,7 @@ function run_java {
+   shift
+   coverage_agent=""
+   if [ "${coverage:-0}" == "1" ]; then
+-    coverage_agent="-javaagent:$HOME/.m2/repository/org/jacoco/org.jacoco.agent/0.8.0/org.jacoco.agent-0.8.0-runtime.jar=destfile=${here:?}/target/jacoco.exec"
++    coverage_agent="-javaagent:$HOME/.m2/repository/org/jacoco/org.jacoco.agent/0.8.6/org.jacoco.agent-0.8.6-runtime.jar=destfile=${here:?}/target/jacoco.exec"
+   fi
+ 
+   # Note that hprof can be misleading; only use this as a rough gauge.
+diff --git a/cli/pom.xml b/cli/pom.xml
+index ecde5ea..f586f12 100644
+--- a/cli/pom.xml
++++ b/cli/pom.xml
+@@ -51,10 +51,77 @@
+   </dependencies>
+   <build>
+     <plugins>
++            <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-assembly-plugin</artifactId>
++                <version>3.3.0</version>
++
++                <configuration>
++                    <descriptorRefs>
++                        <descriptorRef>jar-with-dependencies</descriptorRef>
++                    </descriptorRefs>
++                </configuration>
++
++                <executions>
++
++                    <execution>
++                        <id>make-assembly</id>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>single</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 2. Using maven assembly to compile the test jar -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <executions>
++                    <execution>
++                        <goals>
++                            <goal>test-jar</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 3. Jar instrumentation for jacoco -->
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <version>0.8.6</version>
++                <executions>
++                    <execution>
++                        <id>default-prepare-agent</id>
++                        <goals>
++                            <goal>prepare-agent</goal>
++                        </goals>
++                    </execution>
++                    <execution>
++                        <id>jacoco-report</id>
++                        <phase>test</phase>
++                        <goals>
++                            <goal>report</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-compiler-plugin</artifactId>
++                <configuration>
++                    <source>1.8</source>
++                    <target>1.8</target>
++                </configuration>
++            </plugin>
+       <plugin>
+         <groupId>org.jacoco</groupId>
+         <artifactId>jacoco-maven-plugin</artifactId>
+-        <version>0.8.0</version>
++        <version>0.8.6</version>
+         <executions>
+           <execution>
+             <goals>
+@@ -105,39 +172,23 @@
+           </execution>
+         </executions>
+       </plugin>
++    </plugins>
++  </build>
++
++  <reporting>
++    <plugins>
++            <!-- 4. Reporting for jacoco -->
+             <plugin>
+-        <artifactId>maven-antrun-plugin</artifactId>
+-        <version>1.8</version>
+-        <executions>
+-          <execution>
+-            <id>bash-tests</id>
+-            <phase>test</phase>
+-            <goals>
+-              <goal>run</goal>
+-            </goals>
+-            <configuration>
+-              <target>
+-                <exec executable="bin/test/run-tests" failOnError="true" />
+-              </target>
+-            </configuration>
+-          </execution>
+-          <execution>
+-            <id>make-self-executing</id>
+-            <phase>package</phase>
+-            <goals>
+-              <goal>run</goal>
+-            </goals>
+-            <configuration>
+-              <target>
+-                <exec executable="../bin/make-executable-jar" failOnError="true">
+-                  <arg value="cli"/>
+-                  <arg value="com.cldellow.manu.cli.CliApp"/>
+-                </exec>
+-              </target>
+-            </configuration>
+-          </execution>
+-        </executions>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <reportSets>
++                    <reportSet>
++                        <reports>
++                            <report>report</report>
++                        </reports>
++                    </reportSet>
++                </reportSets>
+             </plugin>
+     </plugins>
+-  </build>
++  </reporting>
+ </project>
+diff --git a/common/pom.xml b/common/pom.xml
+index 1a205a8..4a3f605 100644
+--- a/common/pom.xml
++++ b/common/pom.xml
+@@ -30,10 +30,77 @@
+   </dependencies>
+   <build>
+     <plugins>
++            <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-assembly-plugin</artifactId>
++                <version>3.3.0</version>
++
++                <configuration>
++                    <descriptorRefs>
++                        <descriptorRef>jar-with-dependencies</descriptorRef>
++                    </descriptorRefs>
++                </configuration>
++
++                <executions>
++
++                    <execution>
++                        <id>make-assembly</id>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>single</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 2. Using maven assembly to compile the test jar -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <executions>
++                    <execution>
++                        <goals>
++                            <goal>test-jar</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 3. Jar instrumentation for jacoco -->
+             <plugin>
+                 <groupId>org.jacoco</groupId>
+                 <artifactId>jacoco-maven-plugin</artifactId>
+-        <version>0.8.0</version>
++                <version>0.8.6</version>
++                <executions>
++                    <execution>
++                        <id>default-prepare-agent</id>
++                        <goals>
++                            <goal>prepare-agent</goal>
++                        </goals>
++                    </execution>
++                    <execution>
++                        <id>jacoco-report</id>
++                        <phase>test</phase>
++                        <goals>
++                            <goal>report</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-compiler-plugin</artifactId>
++                <configuration>
++                    <source>1.8</source>
++                    <target>1.8</target>
++                </configuration>
++            </plugin>
++      <plugin>
++        <groupId>org.jacoco</groupId>
++        <artifactId>jacoco-maven-plugin</artifactId>
++        <version>0.8.6</version>
+         <executions>
+           <execution>
+             <goals>
+@@ -44,4 +111,21 @@
+       </plugin>
+     </plugins>
+   </build>
++
++  <reporting>
++    <plugins>
++            <!-- 4. Reporting for jacoco -->
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <reportSets>
++                    <reportSet>
++                        <reports>
++                            <report>report</report>
++                        </reports>
++                    </reportSet>
++                </reportSets>
++            </plugin>
++    </plugins>
++  </reporting>
+ </project>
+diff --git a/common/src/test/java/com/cldellow/manu/common/IntVectorTest.java b/common/src/test/java/com/cldellow/manu/common/IntVectorTest.java
+index bc3494c..e19e298 100644
+--- a/common/src/test/java/com/cldellow/manu/common/IntVectorTest.java
++++ b/common/src/test/java/com/cldellow/manu/common/IntVectorTest.java
+@@ -62,8 +62,8 @@ public class IntVectorTest {
+     }
+ 
+     @Property
+-    public void testLikeArray(int[] ints) {
+-        IntVector iv = new IntVector();
++    public void testLikeArray(int[] ints, boolean grow) {
++        IntVector iv = grow ? new IntVector(1) : new IntVector();
+         for (int i = 0; i < ints.length; i++) {
+             assertEquals(i, iv.getSize());
+             iv.add(ints[i]);
+diff --git a/format/pom.xml b/format/pom.xml
+index 7aebe09..e909e41 100644
+--- a/format/pom.xml
++++ b/format/pom.xml
+@@ -52,10 +52,77 @@
+   </dependencies>
+   <build>
+     <plugins>
++            <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-assembly-plugin</artifactId>
++                <version>3.3.0</version>
++
++                <configuration>
++                    <descriptorRefs>
++                        <descriptorRef>jar-with-dependencies</descriptorRef>
++                    </descriptorRefs>
++                </configuration>
++
++                <executions>
++
++                    <execution>
++                        <id>make-assembly</id>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>single</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 2. Using maven assembly to compile the test jar -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <executions>
++                    <execution>
++                        <goals>
++                            <goal>test-jar</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 3. Jar instrumentation for jacoco -->
+             <plugin>
+                 <groupId>org.jacoco</groupId>
+                 <artifactId>jacoco-maven-plugin</artifactId>
+-        <version>0.8.0</version>
++                <version>0.8.6</version>
++                <executions>
++                    <execution>
++                        <id>default-prepare-agent</id>
++                        <goals>
++                            <goal>prepare-agent</goal>
++                        </goals>
++                    </execution>
++                    <execution>
++                        <id>jacoco-report</id>
++                        <phase>test</phase>
++                        <goals>
++                            <goal>report</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-compiler-plugin</artifactId>
++                <configuration>
++                    <source>1.8</source>
++                    <target>1.8</target>
++                </configuration>
++            </plugin>
++      <plugin>
++        <groupId>org.jacoco</groupId>
++        <artifactId>jacoco-maven-plugin</artifactId>
++        <version>0.8.6</version>
+         <executions>
+           <execution>
+             <goals>
+@@ -66,4 +133,21 @@
+       </plugin>
+     </plugins>
+   </build>
++
++  <reporting>
++    <plugins>
++            <!-- 4. Reporting for jacoco -->
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <reportSets>
++                    <reportSet>
++                        <reports>
++                            <report>report</report>
++                        </reports>
++                    </reportSet>
++                </reportSets>
++            </plugin>
++    </plugins>
++  </reporting>
+ </project>
+diff --git a/format/src/test/java/com/cldellow/manu/format/LengthOpsTest.java b/format/src/test/java/com/cldellow/manu/format/LengthOpsTest.java
+index da168be..70c8c55 100644
+--- a/format/src/test/java/com/cldellow/manu/format/LengthOpsTest.java
++++ b/format/src/test/java/com/cldellow/manu/format/LengthOpsTest.java
+@@ -53,7 +53,15 @@ public class LengthOpsTest {
+ 
+ 
+     @Property
+-    public void decodeIdAnyLen(@InRange(min = "0", max = "63") int id, @InRange(min = "0") int len) {
++    public void decodeIdAnyLen(@InRange(min = "0", max = "63") int id, @InRange(min = "0", max = "254") int smallLen, @InRange(min = "255", max = "65534") int mediumLen,  @InRange(min = "65535") int largeLen,  @InRange(min = "0", max = "2") int lenSelect) {
++        int len;
++
++        switch (lenSelect) {
++            case 2: len = largeLen;  break;
++            case 1: len = mediumLen; break;
++            case 0: len = smallLen;  break;
++            default: throw new Error("Dead code");
++        }
+         byte encoded = LengthOps.encode((byte) id, len);
+         assertEquals(id, LengthOps.decodeId(encoded));
+ 
+diff --git a/pom.xml b/pom.xml
+index 88ee067..cf9cdb9 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -158,24 +158,24 @@
+           </execution>
+         </executions>
+       </plugin>
+-      <plugin>
+-        <artifactId>maven-antrun-plugin</artifactId>
+-        <version>1.8</version>
+-        <executions>
+-          <execution>
+-            <id>run-shellcheck</id>
+-            <phase>compile</phase>
+-            <goals>
+-              <goal>run</goal>
+-            </goals>
+-            <configuration>
+-              <target>
+-                <exec executable="${manu.root}/bin/run-shellcheck" failOnError="true" />
+-              </target>
+-            </configuration>
+-          </execution>
+-        </executions>
+-      </plugin>
++      <!--      <plugin>                                                                                -->
++      <!--        <artifactId>maven-antrun-plugin</artifactId>                                          -->
++      <!--        <version>1.8</version>                                                                -->
++      <!--        <executions>                                                                          -->
++      <!--          <execution>                                                                         -->
++      <!--            <id>run-shellcheck</id>                                                           -->
++      <!--            <phase>compile</phase>                                                            -->
++      <!--            <goals>                                                                           -->
++      <!--              <goal>run</goal>                                                                -->
++      <!--            </goals>                                                                          -->
++      <!--            <configuration>                                                                   -->
++      <!--              <target>                                                                        -->
++      <!--                <exec executable="${manu.root}/bin/run-shellcheck" failOnError="true" />      -->
++      <!--              </target>                                                                       -->
++      <!--            </configuration>                                                                  -->
++      <!--          </execution>                                                                        -->
++      <!--        </executions>                                                                         -->
++      <!--      </plugin>                                                                               -->
+     </plugins>
+   </build>
+   <profiles>
+diff --git a/report/pom.xml b/report/pom.xml
+index c1d6d2d..28b14c4 100644
+--- a/report/pom.xml
++++ b/report/pom.xml
+@@ -55,7 +55,7 @@
+       <plugin>
+         <groupId>org.jacoco</groupId>
+         <artifactId>jacoco-maven-plugin</artifactId>
+-        <version>0.8.0</version>
++        <version>0.8.6</version>
+         <configuration>
+           <fileSets>
+             <fileSet implementation="org.apache.maven.shared.model.fileset.FileSet">
+diff --git a/serve/pom.xml b/serve/pom.xml
+index 85417ee..8eda524 100644
+--- a/serve/pom.xml
++++ b/serve/pom.xml
+@@ -53,7 +53,7 @@
+       <plugin>
+         <groupId>org.jacoco</groupId>
+         <artifactId>jacoco-maven-plugin</artifactId>
+-        <version>0.8.0</version>
++        <version>0.8.6</version>
+         <executions>
+           <execution>
+             <goals>

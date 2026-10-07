@@ -1,0 +1,292 @@
+diff --git a/pom.xml b/pom.xml
+index 4bfd647..7e351ea 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -63,9 +63,9 @@
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-surefire-plugin</artifactId>
+                 <version>${maven-failsafe-surefire-plugin.version}</version>
+-                <configuration>
+-                    <forkCount>0</forkCount>
+-                </configuration>
++                <!-- <configuration>                -->
++                <!--     <forkCount>0</forkCount>   -->
++                <!-- </configuration>               -->
+             </plugin>
+
+             <!--<plugin>-->
+@@ -128,9 +128,6 @@
+                 <artifactId>maven-compiler-plugin</artifactId>
+                 <version>${maven-compiler-plugin.version}</version>
+                 <configuration>
+-                    <compilerArguments>
+-                        <Werror/>
+-                    </compilerArguments>
+                     <!--The "missing serialVersionUID" warning is useless in this project,
+                     as in all projects that dont need a serialization compatibility policy
+                     more advanced than the default one (see Effective Java).-->
+@@ -158,6 +158,11 @@
+             <version>${junit.version}</version>
+             <scope>test</scope>
+         </dependency>
++        <dependency>
++            <groupId>org.hamcrest</groupId>
++            <artifactId>hamcrest-library</artifactId>
++            <version>1.3</version>
++        </dependency>
+         <dependency>
+             <groupId>org.assertj</groupId>
+             <artifactId>assertj-core</artifactId>
+diff --git a/wires-core/pom.xml b/wires-core/pom.xml
+index 19899c1..d1c753e 100644
+--- a/wires-core/pom.xml
++++ b/wires-core/pom.xml
+@@ -29,6 +29,65 @@
+
+     <build>
+         <plugins>
++            <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-assembly-plugin</artifactId>
++                <version>3.3.0</version>
++
++                <configuration>
++                    <descriptorRefs>
++                        <descriptorRef>jar-with-dependencies</descriptorRef>
++                    </descriptorRefs>
++                </configuration>
++
++                <executions>
++
++                    <execution>
++                        <id>make-assembly</id>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>single</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 2. Using maven assembly to compile the test jar -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <executions>
++                    <execution>
++                        <goals>
++                            <goal>test-jar</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 3. Jar instrumentation for jacoco -->
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <version>0.8.6</version>
++                <executions>
++                    <execution>
++                        <id>default-prepare-agent</id>
++                        <goals>
++                            <goal>prepare-agent</goal>
++                        </goals>
++                    </execution>
++                    <execution>
++                        <id>jacoco-report</id>
++                        <phase>test</phase>
++                        <goals>
++                            <goal>report</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
+             <plugin>
+                 <groupId>org.codehaus.mojo</groupId>
+                 <artifactId>exec-maven-plugin</artifactId>
+@@ -44,4 +103,21 @@
+         </plugins>
+     </build>
+
++  <reporting>
++    <plugins>
++            <!-- 4. Reporting for jacoco -->
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <reportSets>
++                    <reportSet>
++                        <reports>
++                            <report>report</report>
++                        </reports>
++                    </reportSet>
++                </reportSets>
++            </plugin>
++    </plugins>
++  </reporting>
++
+ </project>
+diff --git a/wires-support/pom.xml b/wires-support/pom.xml
+index 21e3e30..ab99984 100644
+--- a/wires-support/pom.xml
++++ b/wires-support/pom.xml
+@@ -12,4 +12,85 @@
+     <version>1.0-SNAPSHOT</version>
+     <packaging>jar</packaging>
+
++    <build>
++        <plugins>
++            <!-- 1. Using maven assembly to compile the fat application jar (with dependencies) -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-assembly-plugin</artifactId>
++                <version>3.3.0</version>
++
++                <configuration>
++                    <descriptorRefs>
++                        <descriptorRef>jar-with-dependencies</descriptorRef>
++                    </descriptorRefs>
++                </configuration>
++
++                <executions>
++
++                    <execution>
++                        <id>make-assembly</id>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>single</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 2. Using maven assembly to compile the test jar -->
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <executions>
++                    <execution>
++                        <goals>
++                            <goal>test-jar</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++
++            <!-- 3. Jar instrumentation for jacoco -->
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <version>0.8.6</version>
++                <executions>
++                    <execution>
++                        <id>default-prepare-agent</id>
++                        <goals>
++                            <goal>prepare-agent</goal>
++                        </goals>
++                    </execution>
++                    <execution>
++                        <id>jacoco-report</id>
++                        <phase>test</phase>
++                        <goals>
++                            <goal>report</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++        </plugins>
++    </build>
++
++  <reporting>
++    <plugins>
++            <!-- 4. Reporting for jacoco -->
++            <plugin>
++                <groupId>org.jacoco</groupId>
++                <artifactId>jacoco-maven-plugin</artifactId>
++                <reportSets>
++                    <reportSet>
++                        <reports>
++                            <report>report</report>
++                        </reports>
++                    </reportSet>
++                </reportSets>
++            </plugin>
++    </plugins>
++  </reporting>
++
+ </project>
+diff --git a/wires-support/src/main/java/module-info.java b/wires-support/src/main/java/module-info.java
+index 0171384..2cacea5 100644
+--- a/wires-support/src/main/java/module-info.java
++++ b/wires-support/src/main/java/module-info.java
+@@ -1,4 +1,5 @@
+ module fr.cla.wires.support {
+     exports fr.cla.wires.support.functional;
+     exports fr.cla.wires.support.oo;
++    exports fr.cla.wires.support.pbt;
+ }
+\ No newline at end of file
+diff --git a/wires-support/src/test/java/fr/cla/wires/support/oo/package-info.java b/wires-support/src/test/java/fr/cla/wires/support/oo/package-info.java
+deleted file mode 100644
+index eb5e864..0000000
+--- a/wires-support/src/test/java/fr/cla/wires/support/oo/package-info.java
++++ /dev/null
+@@ -1,4 +0,0 @@
+-/**
+- * Contains tests of supporting reifications of OO patterns.
+- */
+-package fr.cla.wires.support.oo;
+\ No newline at end of file
+diff --git a/wires-support/src/test/java/fr/cla/wires/support/oo/test/package-info.java b/wires-support/src/test/java/fr/cla/wires/support/oo/test/package-info.java
+deleted file mode 100644
+index 8ad6e03..0000000
+--- a/wires-support/src/test/java/fr/cla/wires/support/oo/test/package-info.java
++++ /dev/null
+@@ -1,9 +0,0 @@
+-/**
+- * Classes in this package should be in fr.cla.wires.support.oo:
+- * I want to do whitebox testing of AbstractValueObject but can't because of MCOMPILER-354
+- *
+- * This happens only because fr.cla.wires.support.oo is an exported package,
+- * we use maven test-scoped-dependencies which patch the module with tests,
+- * and these tests drag their unexported dependencies.
+- */
+-package fr.cla.wires.support.oo.test;
+\ No newline at end of file
+diff --git a/wires-support/src/test/java/fr/cla/wires/support/package-info.java b/wires-support/src/test/java/fr/cla/wires/support/package-info.java
+deleted file mode 100644
+index 6d92f33..0000000
+--- a/wires-support/src/test/java/fr/cla/wires/support/package-info.java
++++ /dev/null
+@@ -1,5 +0,0 @@
+-/**
+- * Contains tests of supporting reifications of OO and FP patterns,
+- * and support classes for OO/FP testing approaches like TDD/PBT (Property-Based testing)
+- */
+-package fr.cla.wires.support;
+\ No newline at end of file
+diff --git a/wires-support/src/test/java/fr/cla/wires/support/pbt/package-info.java b/wires-support/src/test/java/fr/cla/wires/support/pbt/package-info.java
+deleted file mode 100644
+index 632f927..0000000
+--- a/wires-support/src/test/java/fr/cla/wires/support/pbt/package-info.java
++++ /dev/null
+@@ -1,4 +0,0 @@
+-/**
+- * Test-specific PBT support
+- */
+-package fr.cla.wires.support.pbt;
+\ No newline at end of file
+diff --git a/wires-support/src/main/java/fr/cla/wires/support/pbt/c.java b/wires-support/src/main/java/fr/cla/wires/support/pbt/c.java
+new file mode 100644
+index 0000000..2804b35
+--- /dev/null
++++ b/wires-support/src/main/java/fr/cla/wires/support/pbt/c.java
+@@ -0,0 +1,4 @@
++package fr.cla.wires.support.pbt;
++
++public class c {
++}

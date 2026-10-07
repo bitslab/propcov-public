@@ -1,0 +1,67 @@
+version: 1
+name: wires-support-fixed
+subProject: wires-support
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: b388f3436f4a062f19907289085fd99e112d171a
+    URL: https://github.com/vandekeiser/wires.git
+patchName: artifacts/configs/wires-support-fixed/wires-support-fixed.patch
+mainJar: wires-support-1.0-SNAPSHOT.jar
+mainJarWithDependencies: wires-support-1.0-SNAPSHOT-jar-with-dependencies.jar
+testJar: wires-support-1.0-SNAPSHOT-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: Accumulable_PbtTest#if_newVal_is_not_null_mutableEquivalentToInitially_should_be_equivalent_to_initially
+  entryPoint: fr.cla.wires.support.oo.test.Accumulable_PbtTest.if_newVal_is_not_null_mutableEquivalentToInitially_should_be_equivalent_to_initially(Lfr/cla/wires/support/pbt/VoPair;)V
+- name: AbstractValueObject_PbtTest#equals_implies_same_hashCode
+  entryPoint: fr.cla.wires.support.oo.test.AbstractValueObject_PbtTest.equals_implies_same_hashCode(Lfr/cla/wires/support/pbt/VoPair;)V
+- name: AbstractValueObject_PbtTest#equals_null_should_be_false
+  entryPoint: fr.cla.wires.support.oo.test.AbstractValueObject_PbtTest.equals_null_should_be_false(Lfr/cla/wires/support/pbt/VoSingleton;)V
+- name: AbstractValueObject_PbtTest#equals_should_be_consistent
+  entryPoint: fr.cla.wires.support.oo.test.AbstractValueObject_PbtTest.equals_should_be_consistent(Lfr/cla/wires/support/pbt/VoPair;)V
+- name: AbstractValueObject_PbtTest#equals_should_be_false_for_different_types
+  entryPoint: fr.cla.wires.support.oo.test.AbstractValueObject_PbtTest.equals_should_be_false_for_different_types(Lfr/cla/wires/support/pbt/VoPair;)V
+- name: AbstractValueObject_PbtTest#equals_should_be_reflexive
+  entryPoint: fr.cla.wires.support.oo.test.AbstractValueObject_PbtTest.equals_should_be_reflexive(Lfr/cla/wires/support/pbt/VoSingleton;)V
+- name: AbstractValueObject_PbtTest#equals_should_be_symmetric
+  entryPoint: fr.cla.wires.support.oo.test.AbstractValueObject_PbtTest.equals_should_be_symmetric(Lfr/cla/wires/support/pbt/VoPair;)V
+- name: AbstractValueObject_PbtTest#equals_should_be_transitive
+  entryPoint: fr.cla.wires.support.oo.test.AbstractValueObject_PbtTest.equals_should_be_transitive(Lfr/cla/wires/support/pbt/VoTriplet;)V
+- name: AbstractValueObject_PbtTest#hashCode_should_be_consistent
+  entryPoint: fr.cla.wires.support.oo.test.AbstractValueObject_PbtTest.hashCode_should_be_consistent(Lfr/cla/wires/support/pbt/VoSingleton;)V
+- name: VoGeneratorsSanityCheck_PbtTest#random_pairs_should_sometimes_contain_equal_xy
+  entryPoint: fr.cla.wires.support.pbt.VoGeneratorsSanityCheck_PbtTest.random_pairs_should_sometimes_contain_equal_xy(Lfr/cla/wires/support/pbt/VoPair;)V
+- name: VoGeneratorsSanityCheck_PbtTest#random_pairs_should_sometimes_contain_not_equal_xy
+  entryPoint: fr.cla.wires.support.pbt.VoGeneratorsSanityCheck_PbtTest.random_pairs_should_sometimes_contain_not_equal_xy(Lfr/cla/wires/support/pbt/VoPair;)V
+- name: VoGeneratorsSanityCheck_PbtTest#random_triplets_should_sometimes_contain_equal_xy
+  entryPoint: fr.cla.wires.support.pbt.VoGeneratorsSanityCheck_PbtTest.random_triplets_should_sometimes_contain_equal_xy(Lfr/cla/wires/support/pbt/VoTriplet;)V
+- name: VoGeneratorsSanityCheck_PbtTest#random_triplets_should_sometimes_contain_equal_xyz
+  entryPoint: fr.cla.wires.support.pbt.VoGeneratorsSanityCheck_PbtTest.random_triplets_should_sometimes_contain_equal_xyz(Lfr/cla/wires/support/pbt/VoTriplet;)V
+- name: VoGeneratorsSanityCheck_PbtTest#random_triplets_should_sometimes_contain_equal_xz
+  entryPoint: fr.cla.wires.support.pbt.VoGeneratorsSanityCheck_PbtTest.random_triplets_should_sometimes_contain_equal_xz(Lfr/cla/wires/support/pbt/VoTriplet;)V
+- name: VoGeneratorsSanityCheck_PbtTest#random_triplets_should_sometimes_contain_equal_yz
+  entryPoint: fr.cla.wires.support.pbt.VoGeneratorsSanityCheck_PbtTest.random_triplets_should_sometimes_contain_equal_yz(Lfr/cla/wires/support/pbt/VoTriplet;)V
+- name: VoGeneratorsSanityCheck_PbtTest#random_triplets_should_sometimes_not_contain_equal_xy
+  entryPoint: fr.cla.wires.support.pbt.VoGeneratorsSanityCheck_PbtTest.random_triplets_should_sometimes_not_contain_equal_xy(Lfr/cla/wires/support/pbt/VoTriplet;)V
+- name: VoGeneratorsSanityCheck_PbtTest#random_triplets_should_sometimes_not_contain_equal_xyz
+  entryPoint: fr.cla.wires.support.pbt.VoGeneratorsSanityCheck_PbtTest.random_triplets_should_sometimes_not_contain_equal_xyz(Lfr/cla/wires/support/pbt/VoTriplet;)V
+- name: VoGeneratorsSanityCheck_PbtTest#random_triplets_should_sometimes_not_contain_equal_xz
+  entryPoint: fr.cla.wires.support.pbt.VoGeneratorsSanityCheck_PbtTest.random_triplets_should_sometimes_not_contain_equal_xz(Lfr/cla/wires/support/pbt/VoTriplet;)V
+- name: VoGeneratorsSanityCheck_PbtTest#random_triplets_should_sometimes_not_contain_equal_yz
+  entryPoint: fr.cla.wires.support.pbt.VoGeneratorsSanityCheck_PbtTest.random_triplets_should_sometimes_not_contain_equal_yz(Lfr/cla/wires/support/pbt/VoTriplet;)V
+- name: VoGeneratorsSanityCheck2_PbtTest#random_pairs_should_sometimes_contain_xy_of_different_types
+  entryPoint: fr.cla.wires.support.pbt.VoGeneratorsSanityCheck2_PbtTest.random_pairs_should_sometimes_contain_xy_of_different_types(Lfr/cla/wires/support/pbt/VoPair;)V
+- name: VoGeneratorsSanityCheck2_PbtTest#random_pairs_should_sometimes_contain_xy_of_related_types
+  entryPoint: fr.cla.wires.support.pbt.VoGeneratorsSanityCheck2_PbtTest.random_pairs_should_sometimes_contain_xy_of_related_types(Lfr/cla/wires/support/pbt/VoPair;)V
+- name: VoGeneratorsSanityCheck2_PbtTest#random_pairs_should_sometimes_contain_xy_of_same_type
+  entryPoint: fr.cla.wires.support.pbt.VoGeneratorsSanityCheck2_PbtTest.random_pairs_should_sometimes_contain_xy_of_same_type(Lfr/cla/wires/support/pbt/VoPair;)V
+- name: VoGeneratorsSanityCheck2_PbtTest#random_pairs_should_sometimes_contain_xy_of_unrelated_types
+  entryPoint: fr.cla.wires.support.pbt.VoGeneratorsSanityCheck2_PbtTest.random_pairs_should_sometimes_contain_xy_of_unrelated_types(Lfr/cla/wires/support/pbt/VoPair;)V

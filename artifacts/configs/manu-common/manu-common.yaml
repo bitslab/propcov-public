@@ -1,0 +1,23 @@
+version: 1
+name: manu-common
+subProject: common
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 51b5e1485a55cadee3b9606e7a8a7b357ed3dd2d
+    URL: https://github.com/cldellow/manu.git
+patchName: artifacts/configs/manu-common/manu-common.patch
+mainJar: manu-common-0.3.0-SNAPSHOT.jar
+mainJarWithDependencies: manu-common-0.3.0-SNAPSHOT-jar-with-dependencies.jar
+testJar: manu-common-0.3.0-SNAPSHOT-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: IntVectorTest#testLikeArray
+  entryPoint: com.cldellow.manu.common.IntVectorTest.testLikeArray([I)V

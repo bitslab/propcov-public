@@ -1,0 +1,22 @@
+version: 1
+name: nexappcore
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 4c302178f853751c1c4cb2831b8284b622bf66ba
+    URL: https://github.com/Nexapp/NexappCore.git
+patchName: artifacts/configs/nexappcore/nexappcore.patch
+mainJar: core-0.1.3.jar
+mainJarWithDependencies: core-0.1.3-jar-with-dependencies.jar
+testJar: core-0.1.3-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: SHA512PasswordHasherTest#samePasswordAndSaltShouldMatchHash
+  entryPoint: ca.nexapp.core.authentication.hashers.SHA512PasswordHasherTest.samePasswordAndSaltShouldMatchHash(Ljava/lang/String;[B)V

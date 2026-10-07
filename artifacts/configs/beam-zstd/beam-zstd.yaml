@@ -1,0 +1,22 @@
+version: 1
+name: beam-zstd
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 5d488f8f11c1cc85878c0a6df5ea11201940ca95
+    URL: https://github.com/adarshsoodan/beam-zstd.git
+patchName: artifacts/configs/beam-zstd/beam-zstd.patch
+mainJar: zstdcoder-0.0.1-SNAPSHOT.jar
+mainJarWithDependencies: zstdcoder-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+testJar: zstdcoder-0.0.1-SNAPSHOT-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: TestZstdCoder#testWithoutDictionary
+  entryPoint: in.neolog.beam.coder.TestZstdCoder.testWithoutDictionary(Lin/neolog/beam/coder/SampleBean;)V

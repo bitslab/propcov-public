@@ -1,0 +1,208 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>edu.uic.bitslab</groupId>
+        <artifactId>propcov</artifactId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>propcov-extensions</artifactId>
+    <name>PropCov Extensions</name>
+    <packaging>jar</packaging>
+
+    <properties>
+        <version.org.glassfish.jaxb-runtime>4.0.5</version.org.glassfish.jaxb-runtime>
+        <version.jakarta.xml.bind-api>4.0.2</version.jakarta.xml.bind-api>
+        <version.org.sonatype.sisu-guava>0.9.9</version.org.sonatype.sisu-guava>
+        <version.org.eclipse.jgit>6.6.1.202309021850-r</version.org.eclipse.jgit>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>edu.uic.bitslab</groupId>
+            <artifactId>propcov-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>${version.org.glassfish.jaxb-runtime}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>${version.jakarta.xml.bind-api}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sonatype.sisu</groupId>
+            <artifactId>sisu-guava</artifactId>
+            <version>${version.org.sonatype.sisu-guava}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${version.org.scala-lang}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.13</artifactId>
+            <version>${version.org.scalatest}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.opal-project</groupId>
+            <artifactId>bytecode-representation_2.13</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.opal-project</groupId>
+            <artifactId>framework_2.13</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.opal-project</groupId>
+            <artifactId>three-address-code_2.13</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.opal-project</groupId>
+            <artifactId>abstract-interpretation-framework_2.13</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.opal-project</groupId>
+            <artifactId>static-analysis-infrastructure_2.13</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.opal-project</groupId>
+            <artifactId>bytecode-disassembler_2.13</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>de.opal-project</groupId>
+            <artifactId>common_2.13</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jgrapht</groupId>
+            <artifactId>jgrapht-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>org.jacoco.core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit</artifactId>
+            <version>${version.org.eclipse.jgit}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>${version.org.codehaus.mojo.jaxb2-maven-plugin}</version>
+                <executions>
+                    <execution>
+                        <id>jacoco-dtd</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <externalEntityProcessing>true</externalEntityProcessing>
+                            <sourceType>dtd</sourceType>
+                            <sources>
+                                <source>src/main/resources/jaxb2/jacoco</source>
+                            </sources>
+                            <outputDirectory>target/generated-sources</outputDirectory>
+                            <packageName>jaxb.generated.jacoco</packageName>
+                            <clearOutputDir>true</clearOutputDir>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>surefire-xsd</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <externalEntityProcessing>true</externalEntityProcessing>
+                            <sourceType>xmlschema</sourceType>
+                            <sources>
+                                <source>src/main/resources/jaxb2/surefire</source>
+                            </sources>
+                            <outputDirectory>target/generated-sources</outputDirectory>
+                            <packageName>jaxb.generated.surefire</packageName>
+                            <clearOutputDir>false</clearOutputDir>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.sun.xml.bind</groupId>
+                        <artifactId>jaxb-xjc</artifactId>
+                        <version>4.0.6</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <!-- see http://davidb.github.com/scala-maven-plugin -->
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>${version.net.alchim31.maven.scala-maven-plugin}</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <args>
+                                <arg>-dependencyfile</arg>
+                                <arg>${project.build.directory}/.scala_dependencies</arg>
+                            </args>
+                            <scalaCompatVersion>${project.scala.version}</scalaCompatVersion>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

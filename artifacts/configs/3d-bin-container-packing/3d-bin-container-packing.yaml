@@ -1,0 +1,27 @@
+version: 1
+name: 3d-bin-container-packing
+subProject: core
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 01e09ee1424be08ec70f3787874118d6638cc63d
+    URL: https://github.com/skjolber/3d-bin-container-packing.git
+patchName: artifacts/configs/3d-bin-container-packing/3d-bin-container-packing.patch
+mainJar: core-4.0.0-SNAPSHOT.jar
+mainJarWithDependencies: core-4.0.0-SNAPSHOT-jar-with-dependencies.jar
+testJar: core-4.0.0-SNAPSHOT-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: AbstractPackagerProperties#eightBoxesWithExtraSpace
+  entryPoint: com.github.skjolber.packing.packer.AbstractPackagerProperties.eightBoxesWithExtraSpace(Lcom/github/skjolber/packing/api/Dimension;III)V
+- name: AbstractPackagerProperties#fiveBoxesTightRow
+  entryPoint: com.github.skjolber.packing.packer.AbstractPackagerProperties.fiveBoxesTightRow(Lcom/github/skjolber/packing/api/Dimension;)V
+- name: AbstractPackagerProperties#fourBoxes2x2x1
+  entryPoint: com.github.skjolber.packing.packer.AbstractPackagerProperties.fourBoxes2x2x1(Lcom/github/skjolber/packing/api/Dimension;III)V

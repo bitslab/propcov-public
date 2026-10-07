@@ -1,0 +1,62 @@
+version: 1
+name: sinch-sms-fixed
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 4b4c611e0074616628e8419287acc76fb437621f
+    URL: https://github.com/sinch/sinch-java-sms.git
+patchName: artifacts/configs/sinch-sms-fixed/sinch-sms-fixed.patch
+mainJar: sdk-sms-2.0.2-SNAPSHOT.jar
+mainJarWithDependencies: sdk-sms-2.0.2-SNAPSHOT-jar-with-dependencies.jar
+testJar: sdk-sms-2.0.2-SNAPSHOT-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+  properties:
+    mvnOptions: -DfailIfNoTests=false
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: GroupFilterTest#generatesValidQueryParameters
+  entryPoint: com.sinch.xms.GroupFilterTest.generatesValidQueryParameters(IILjava/util/Set;)V
+- name: InboundsFilterTest#generatesValidQueryParameters
+  entryPoint: com.sinch.xms.InboundsFilterTest.generatesValidQueryParameters(IILjava/util/Set;Ljava/time/LocalDate;Ljava/time/LocalDate;Ljava/lang/String;)V
+- name: ApiErrorTest#canDeserializeJson
+  entryPoint: com.sinch.xms.api.ApiErrorTest.canDeserializeJson(Ljava/lang/String;Ljava/lang/String;)V
+- name: ApiErrorTest#canSerializeJson
+  entryPoint: com.sinch.xms.api.ApiErrorTest.canSerializeJson(Ljava/lang/String;Ljava/lang/String;)V
+- name: BatchDeliveryReportSmsTest#canDeserialize
+  entryPoint: com.sinch.xms.api.BatchDeliveryReportSmsTest.canDeserialize(Lcom/sinch/xms/api/BatchId;)V
+- name: TagsUpdateTest#canDeserializeJson
+  entryPoint: com.sinch.xms.api.TagsUpdateTest.canDeserializeJson([Ljava/lang/String;[Ljava/lang/String;)V
+- name: TagsUpdateTest#canSerializeJson
+  entryPoint: com.sinch.xms.api.TagsUpdateTest.canSerializeJson(Ljava/util/List;Ljava/util/List;)V
+- name: DeliveryStatusTest#stringRepresentationIsIdentity
+  entryPoint: com.sinch.xms.api.DeliveryStatusTest.stringRepresentationIsIdentity(Ljava/lang/String;)V
+- name: TagsTest#canDeserializeJson
+  entryPoint: com.sinch.xms.api.TagsTest.canDeserializeJson(Ljava/util/List;)V
+- name: TagsTest#canIterateOverTags
+  entryPoint: com.sinch.xms.api.TagsTest.canIterateOverTags(Ljava/util/List;)V
+- name: TagsTest#canSerializeJson
+  entryPoint: com.sinch.xms.api.TagsTest.canSerializeJson(Ljava/util/List;)V
+- name: BatchDeliveryReportMmsTest#canDeserialize
+  entryPoint: com.sinch.xms.api.BatchDeliveryReportMmsTest.canDeserialize(Lcom/sinch/xms/api/BatchId;)V
+- name: ByteInOutStreamTest#canProduceGoodInputStream
+  entryPoint: com.sinch.xms.ByteInOutStreamTest.canProduceGoodInputStream([B)V
+- name: ByteInOutStreamTest#canWriteByteBufferWithArray
+  entryPoint: com.sinch.xms.ByteInOutStreamTest.canWriteByteBufferWithArray([B)V
+- name: ByteInOutStreamTest#canWriteByteBufferWithNoArray
+  entryPoint: com.sinch.xms.ByteInOutStreamTest.canWriteByteBufferWithNoArray([B)V
+- name: DeliveryReportFilterTest#generatesValidQueryParameters
+  entryPoint: com.sinch.xms.DeliveryReportFilterTest.generatesValidQueryParameters(IILjava/util/Set;Ljava/util/Set;Ljava/time/OffsetDateTime;Ljava/time/OffsetDateTime;Ljava/lang/String;)V
+- name: PagedFetcherTest#canDoForEachOverPages
+  entryPoint: com.sinch.xms.PagedFetcherTest.canDoForEachOverPages(Ljava/util/List;)V
+- name: PagedFetcherTest#canDoForeachOverElements
+  entryPoint: com.sinch.xms.PagedFetcherTest.canDoForeachOverElements(Ljava/util/List;)V
+- name: PagedFetcherTest#canDoStandardIterationOverPages
+  entryPoint: com.sinch.xms.PagedFetcherTest.canDoStandardIterationOverPages(Ljava/util/List;)V
+- name: BatchFilterTest#generatesValidQueryParameters
+  entryPoint: com.sinch.xms.BatchFilterTest.generatesValidQueryParameters(IILjava/util/Set;Ljava/util/Set;Ljava/time/OffsetDateTime;Ljava/time/OffsetDateTime;Ljava/lang/String;)V

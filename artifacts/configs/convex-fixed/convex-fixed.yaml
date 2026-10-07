@@ -1,0 +1,25 @@
+version: 1
+name: convex-fixed
+subProject: convex-core
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: e6db05a611cd4a1fb51f959e20d246637bb7744a
+    URL: https://github.com/Convex-Dev/convex.git
+patchName: artifacts/configs/convex-fixed/convex-fixed.patch
+mainJar: convex-core-0.7.1.jar
+mainJarWithDependencies: convex-core-0.7.1-jar-with-dependencies.jar
+testJar: convex-core-0.7.1-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+  properties:
+    mvnOptions: -DfailIfNoTests=false
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: GenTestFormat#messageRoundTrip
+  entryPoint: convex.comms.GenTestFormat.messageRoundTrip(Ljava/lang/String;)V

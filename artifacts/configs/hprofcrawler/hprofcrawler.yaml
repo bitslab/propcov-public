@@ -1,0 +1,42 @@
+version: 1
+name: hprofcrawler
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 61373e04f8fc059af85603d4d6f36b5d858b518b
+    URL: https://github.com/SharplEr/HprofCrawler.git
+patchName: artifacts/configs/hprofcrawler/hprofcrawler.patch
+mainJar: HprofCrawler-1.0-SNAPSHOT.jar
+mainJarWithDependencies: HprofCrawler-1.0-SNAPSHOT-jar-with-dependencies.jar
+testJar: HprofCrawler-1.0-SNAPSHOT-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: UtilsTest#resourceOwner
+  entryPoint: org.sharpler.hprofcrawler.UtilsTest.resourceOwner(ZZZZZZ)V
+- name: UtilsTest#serializeLong
+  entryPoint: org.sharpler.hprofcrawler.UtilsTest.serializeLong(J)V
+- name: ValuePropertyTest#ofBool
+  entryPoint: org.sharpler.hprofcrawler.parser.ValuePropertyTest.ofBool(Z)V
+- name: ValuePropertyTest#ofByte
+  entryPoint: org.sharpler.hprofcrawler.parser.ValuePropertyTest.ofByte(B)V
+- name: ValuePropertyTest#ofChar
+  entryPoint: org.sharpler.hprofcrawler.parser.ValuePropertyTest.ofChar(C)V
+- name: ValuePropertyTest#ofDouble
+  entryPoint: org.sharpler.hprofcrawler.parser.ValuePropertyTest.ofDouble(D)V
+- name: ValuePropertyTest#ofFloat
+  entryPoint: org.sharpler.hprofcrawler.parser.ValuePropertyTest.ofFloat(F)V
+- name: ValuePropertyTest#ofInt
+  entryPoint: org.sharpler.hprofcrawler.parser.ValuePropertyTest.ofInt(I)V
+- name: ValuePropertyTest#ofLong
+  entryPoint: org.sharpler.hprofcrawler.parser.ValuePropertyTest.ofLong(J)V
+- name: ValuePropertyTest#ofShort
+  entryPoint: org.sharpler.hprofcrawler.parser.ValuePropertyTest.ofShort(S)V
+- name: InstanceEntryPropertyTest#serialize
+  entryPoint: org.sharpler.hprofcrawler.entries.InstanceEntryPropertyTest.serialize(JJLjava/util/List;)V

@@ -1,0 +1,53 @@
+version: 1
+name: convex-uber
+#subProject: convex-core
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: e6db05a611cd4a1fb51f959e20d246637bb7744a
+    URL: https://github.com/Convex-Dev/convex.git
+patchName: artifacts/configs/convex-uber/convex-uber.patch
+mainJar:
+  - ./convex-core/target/convex-core-0.7.1.jar
+  - ./convex-benchmarks/target/convex-benchmarks.jar
+  - ./convex-cli/target/convex-cli-0.7.1.jar
+  - ./convex-gui/target/convex-gui-0.7.1.jar
+  - ./convex-peer/target/convex-peer-0.7.1.jar
+mainJarWithDependencies:
+  - ./convex-core/target/convex-core-0.7.1-jar-with-dependencies.jar
+  - ./convex-benchmarks/target/convex-benchmarks-jar-with-dependencies.jar
+  - ./convex-cli/target/convex-cli-0.7.1-jar-with-dependencies.jar
+  - ./convex-gui/target/convex-gui-0.7.1-jar-with-dependencies.jar
+  - ./convex-peer/target/convex-peer-0.7.1-jar-with-dependencies.jar
+testJar:
+  - ./convex-core/target/convex-core-0.7.1-tests.jar
+  - ./convex-benchmarks/target/convex-benchmarks-tests.jar
+  - ./convex-cli/target/convex-cli-0.7.1-tests.jar
+  - ./convex-gui/target/convex-gui-0.7.1-tests.jar
+  - ./convex-peer/target/convex-peer-0.7.1-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+  properties:
+    mvnOptions: -DfailIfNoTests=false
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+  properties:
+    AnalysisType: RTA
+timeouts:
+  dotGeneration: 0
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+  properties:
+    XMLCoverageReport: "site/jacoco-aggregate/jacoco.xml"
+properties:
+- name: GenTestFormat#messageRoundTrip
+  entryPoint: convex.comms.GenTestFormat.messageRoundTrip(Ljava/lang/String;)V
+  subProject: convex-core
+- name: GenTestFormat#primitiveRoundTrip
+  entryPoint: convex.comms.GenTestFormat.primitiveRoundTrip(Lconvex/core/data/ACell;)V
+  subProject: convex-core
+- name: GenTestFormat#dataRoundTrip
+  entryPoint: convex.comms.GenTestFormat.dataRoundTrip(Lconvex/core/data/ACell;)V
+  subProject: convex-core

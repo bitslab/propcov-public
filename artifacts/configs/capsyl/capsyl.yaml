@@ -1,0 +1,22 @@
+version: 1
+name: capsyl
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 0d32ab22e83fe9b9bb738b6d3360a411d75e5643
+    URL: https://github.com/jesperolsson-se/capsyl.git
+patchName: artifacts/configs/capsyl/capsyl.patch
+mainJar: original-capsyl-0.1-SNAPSHOT.jar
+mainJarWithDependencies: capsyl-0.1-SNAPSHOT-jar-with-dependencies.jar
+testJar: capsyl-0.1-SNAPSHOT-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: UuidTest#produceUniqueIdentifiers
+  entryPoint: se.jesperolsson.capsyl.identification.UuidTest.produceUniqueIdentifiers(Lse/jesperolsson/capsyl/identification/Uuid;Lse/jesperolsson/capsyl/identification/Uuid;)V

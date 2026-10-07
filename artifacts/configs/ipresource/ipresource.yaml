@@ -1,0 +1,22 @@
+version: 1
+name: ipresource
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: e4360bab489025e67ce94ba0f9ab775e732ae7f0
+    URL: https://github.com/RIPE-NCC/ipresource.git
+patchName: artifacts/configs/ipresource/ipresource.patch
+mainJar: ipresource-1.53-SNAPSHOT.jar
+mainJarWithDependencies: ipresource-1.53-SNAPSHOT-jar-with-dependencies.jar
+testJar: ipresource-1.53-SNAPSHOT-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: PackedIpRangeTest#packUnpackIpv4
+  entryPoint: net.ripe.ipresource.PackedIpRangeTest.packUnpackIpv4(II)V

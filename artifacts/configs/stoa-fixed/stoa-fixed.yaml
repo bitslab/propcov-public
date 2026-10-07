@@ -1,0 +1,96 @@
+version: 1
+name: stoa-fixed
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 079dcf852c1b979b57ad5666769a41ab7209a7ae
+    URL: https://github.com/adarshsoodan/stoa.git
+patchName: artifacts/configs/stoa-fixed/stoa-fixed.patch
+mainJar: stoa-0.1.1.jar
+mainJarWithDependencies: stoa-0.1.1-jar-with-dependencies.jar
+testJar: stoa-0.1.1-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: HeapTest#addOneRemove
+  entryPoint: org.decon.stoa.test.HeapTest.addOneRemove(Lorg/decon/stoa/test/data/Dummy4;)V
+- name: HeapTest#validateHeapProperty
+  entryPoint: org.decon.stoa.test.HeapTest.validateHeapProperty([Lorg/decon/stoa/test/data/Dummy4;)V
+- name: MapIterTest#addRandom
+  entryPoint: org.decon.stoa.test.MapIterTest.addRandom([Lorg/decon/stoa/test/data/Dummy4;[Lorg/decon/stoa/test/data/Dummy2;I)V
+- name: MapIterTest#overwriteRandom
+  entryPoint: org.decon.stoa.test.MapIterTest.overwriteRandom([Lorg/decon/stoa/test/data/Dummy4;[Lorg/decon/stoa/test/data/Dummy2;I)V
+- name: MapIterTest#removeRandom
+  entryPoint: org.decon.stoa.test.MapIterTest.removeRandom([Lorg/decon/stoa/test/data/Dummy4;[Lorg/decon/stoa/test/data/Dummy2;I)V
+- name: StoaTest#addAll
+  entryPoint: org.decon.stoa.test.StoaTest.addAll([Lorg/decon/stoa/test/data/Dummy1;)V
+- name: StoaTest#addRandom
+  entryPoint: org.decon.stoa.test.StoaTest.addRandom([Lorg/decon/stoa/test/data/Dummy1;I)V
+- name: StoaTest#clearSize
+  entryPoint: org.decon.stoa.test.StoaTest.clearSize([Lorg/decon/stoa/test/data/Dummy1;)V
+- name: StoaTest#exceedSizeBoundAdd
+  entryPoint: org.decon.stoa.test.StoaTest.exceedSizeBoundAdd(Lorg/decon/stoa/test/data/Dummy1;Lorg/decon/stoa/test/data/Dummy1;Lorg/decon/stoa/test/data/Dummy1;)V
+- name: StoaTest#exceedSizeBoundSet
+  entryPoint: org.decon.stoa.test.StoaTest.exceedSizeBoundSet(Lorg/decon/stoa/test/data/Dummy1;Lorg/decon/stoa/test/data/Dummy1;Lorg/decon/stoa/test/data/Dummy1;)V
+- name: StoaTest#nullifyRandom
+  entryPoint: org.decon.stoa.test.StoaTest.nullifyRandom([Lorg/decon/stoa/test/data/Dummy1;I)V
+- name: StoaTest#removeRandom
+  entryPoint: org.decon.stoa.test.StoaTest.removeRandom([Lorg/decon/stoa/test/data/Dummy1;I)V
+- name: StoaTest#setRandom
+  entryPoint: org.decon.stoa.test.StoaTest.setRandom([Lorg/decon/stoa/test/data/Dummy1;[Lorg/decon/stoa/test/data/Dummy1;I)V
+- name: HeapTest#heapSort
+  entryPoint: org.decon.stoa.test.HeapTest.heapSort([Lorg/decon/stoa/test/data/Dummy4;)V
+- name: EnumBufferTest#readWriteRandom
+  entryPoint: org.decon.stoa.test.EnumBufferTest.readWriteRandom([Lorg/decon/stoa/test/data/TestEnum;)V
+- name: PropTest#removeRandom
+  entryPoint: org.decon.stoa.test.PropTest.removeRandom([Lorg/decon/stoa/test/data/Dummy2;I)V
+- name: PropTest#setRandom
+  entryPoint: org.decon.stoa.test.PropTest.setRandom([Lorg/decon/stoa/test/data/Dummy2;[Lorg/decon/stoa/test/data/Dummy2;I)V
+- name: EnumBufferTest#copyRandom
+  entryPoint: org.decon.stoa.test.EnumBufferTest.copyRandom([Lorg/decon/stoa/test/data/TestEnum;I)V
+- name: SetTest#removeRandom
+  entryPoint: org.decon.stoa.test.SetTest.removeRandom([Lorg/decon/stoa/test/data/Dummy4;I)V
+- name: SetTest#addRandom
+  entryPoint: org.decon.stoa.test.SetTest.addRandom([Lorg/decon/stoa/test/data/Dummy4;I)V
+- name: EnumBufferTest#insertRandom
+  entryPoint: org.decon.stoa.test.EnumBufferTest.insertRandom([Lorg/decon/stoa/test/data/TestEnum;Lorg/decon/stoa/test/data/TestEnum;I)V
+- name: EnumBufferTest#removeRandom
+  entryPoint: org.decon.stoa.test.EnumBufferTest.removeRandom([Lorg/decon/stoa/test/data/TestEnum;I)V
+- name: HeapTest#addRandom
+  entryPoint: org.decon.stoa.test.HeapTest.addRandom([Lorg/decon/stoa/test/data/Dummy4;)V
+- name: PropTest#addAll
+  entryPoint: org.decon.stoa.test.PropTest.addAll([Lorg/decon/stoa/test/data/Dummy2;)V
+- name: PropTest#addRandom
+  entryPoint: org.decon.stoa.test.PropTest.addRandom([Lorg/decon/stoa/test/data/Dummy2;I)V
+- name: PropTest#clearSize
+  entryPoint: org.decon.stoa.test.PropTest.clearSize([Lorg/decon/stoa/test/data/Dummy2;)V
+- name: PropTest#nullifyRandom
+  entryPoint: org.decon.stoa.test.PropTest.nullifyRandom([Lorg/decon/stoa/test/data/Dummy2;I)V
+- name: BitBufferTest#copyRandom
+  entryPoint: org.decon.stoa.test.BitBufferTest.copyRandom([ZI)V
+- name: BitBufferTest#insertRandom
+  entryPoint: org.decon.stoa.test.BitBufferTest.insertRandom([ZZI)V
+- name: BitBufferTest#nextSetBit
+  entryPoint: org.decon.stoa.test.BitBufferTest.nextSetBit([Z)V
+- name: BitBufferTest#nextUnsetBit
+  entryPoint: org.decon.stoa.test.BitBufferTest.nextUnsetBit([Z)V
+- name: BitBufferTest#readWriteRandom
+  entryPoint: org.decon.stoa.test.BitBufferTest.readWriteRandom([Z)V
+- name: BitBufferTest#removeRandom
+  entryPoint: org.decon.stoa.test.BitBufferTest.removeRandom([ZI)V
+- name: BitBufferTest#transferWord
+  entryPoint: org.decon.stoa.test.BitBufferTest.transferWord(I)V
+- name: MapTest#addRandomKey
+  entryPoint: org.decon.stoa.test.MapTest.addRandomKey([Lorg/decon/stoa/test/data/Dummy4;[Lorg/decon/stoa/test/data/Dummy2;I)V
+- name: MapTest#addRandomValue
+  entryPoint: org.decon.stoa.test.MapTest.addRandomValue([Lorg/decon/stoa/test/data/Dummy4;[Lorg/decon/stoa/test/data/Dummy2;I)V
+- name: MapTest#overwriteRandomValue
+  entryPoint: org.decon.stoa.test.MapTest.overwriteRandomValue([Lorg/decon/stoa/test/data/Dummy4;[Lorg/decon/stoa/test/data/Dummy2;I)V
+- name: MapTest#removeRandom
+  entryPoint: org.decon.stoa.test.MapTest.removeRandom([Lorg/decon/stoa/test/data/Dummy4;[Lorg/decon/stoa/test/data/Dummy2;I)V

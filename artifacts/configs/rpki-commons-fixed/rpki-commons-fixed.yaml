@@ -1,0 +1,24 @@
+version: 1
+name: rpki-commons-fixed
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: dd5af7c644d2cd9cc6b0b5f4f2480b6dfc1ef074
+    URL: https://github.com/RIPE-NCC/rpki-commons.git
+patchName: artifacts/configs/rpki-commons-fixed/rpki-commons-fixed.patch
+mainJar: rpki-commons-DEV.jar
+mainJarWithDependencies: rpki-commons-DEV-jar-with-dependencies.jar
+testJar: rpki-commons-DEV-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+  properties:
+    mvnOptions: -DfailIfNoTests=false
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: X509ResourceCertificateParentChildValidatorTest#validParentChildSubResources
+  entryPoint: net.ripe.rpki.commons.validation.X509ResourceCertificateParentChildValidatorTest.validParentChildSubResources(Ljava/util/List;ILjava/util/List;)V

@@ -1,0 +1,32 @@
+version: 1
+name: paillier4j
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 6fd6aca264dd2543c35cbc1c87ed5779cb835d2b
+    URL: https://github.com/littleli/paillier4j.git
+patchName: artifacts/configs/paillier4j/paillier4j.patch
+mainJar: paillier4j-1.0.jar
+mainJarWithDependencies: paillier4j-1.0-jar-with-dependencies.jar
+testJar: paillier4j-1.0-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: EncryptionPropertyTest#additionAndMultiplicationOfNumbers
+  entryPoint: cz.edris.crypto.paillier.EncryptionPropertyTest.additionAndMultiplicationOfNumbers(Lcz/edris/crypto/paillier/KeyPair;JJJ)V
+- name: EncryptionPropertyTest#additionOfPositiveNumbers
+  entryPoint: cz.edris.crypto.paillier.EncryptionPropertyTest.additionOfPositiveNumbers(Lcz/edris/crypto/paillier/KeyPair;JJ)V
+- name: EncryptionPropertyTest#encryptNegative
+  entryPoint: cz.edris.crypto.paillier.EncryptionPropertyTest.encryptNegative(Lcz/edris/crypto/paillier/KeyPair;)V
+- name: EncryptionPropertyTest#limitedSubtractionPossible
+  entryPoint: cz.edris.crypto.paillier.EncryptionPropertyTest.limitedSubtractionPossible(Lcz/edris/crypto/paillier/KeyPair;JJ)V
+- name: EncryptionPropertyTest#numberEncryption
+  entryPoint: cz.edris.crypto.paillier.EncryptionPropertyTest.numberEncryption(JLcz/edris/crypto/paillier/KeyPair;)V
+- name: EncryptionPropertyTest#stringEncryption
+  entryPoint: cz.edris.crypto.paillier.EncryptionPropertyTest.stringEncryption(Ljava/lang/String;Lcz/edris/crypto/paillier/KeyPair;)V

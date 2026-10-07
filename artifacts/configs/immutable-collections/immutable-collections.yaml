@@ -1,0 +1,96 @@
+version: 1
+name: immutable-collections
+source:
+  extensionClass: edu.uic.bitslab.propcov.extensions.source.Git
+  properties:
+    checkoutID: 65d9285b15db4823a4804ad14d68eede38b58edb
+    URL: https://github.com/plilja/immutable-collections.git
+patchName: artifacts/configs/immutable-collections/immutable-collections.patch
+mainJar: immutable-collections-1.0-SNAPSHOT.jar
+mainJarWithDependencies: immutable-collections-1.0-SNAPSHOT-jar-with-dependencies.jar
+testJar: immutable-collections-1.0-SNAPSHOT-tests.jar
+buildSystem:
+  extensionClass: edu.uic.bitslab.propcov.extensions.buildsystem.Maven
+testFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.testframework.JunitQuickCheck
+analysisFramework:
+  extensionClass: edu.uic.bitslab.propcov.extensions.analysisframework.Opal
+coverage:
+  extensionClass: edu.uic.bitslab.propcov.extensions.coverage.JaCoCo
+properties:
+- name: WeightBalancedTreeSetTest#lookupNullShouldAlwaysReturnEmpty
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeSetTest.lookupNullShouldAlwaysReturnEmpty(Ljava/util/List;)V
+- name: WeightBalancedTreeSetTest#sizeShouldBeEqualToNumberOfUniqueAddedValues
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeSetTest.sizeShouldBeEqualToNumberOfUniqueAddedValues(Ljava/util/List;)V
+- name: WeightBalancedTreeMapTest#iterateKeysShouldBehaveAsReferenceImplementation
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeMapTest.iterateKeysShouldBehaveAsReferenceImplementation(Ljava/util/List;)V
+- name: WeightBalancedTreeMapTest#iterateValuesShouldBehaveAsReferenceImplementation
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeMapTest.iterateValuesShouldBehaveAsReferenceImplementation(Ljava/util/List;)V
+- name: WeightBalancedTreeMapTest#lookupNullShouldAlwaysReturnEmpty
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeMapTest.lookupNullShouldAlwaysReturnEmpty(Ljava/util/List;)V
+- name: WeightBalancedTreeMapTest#putAllFromImmutableMap
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeMapTest.putAllFromImmutableMap(Ljava/util/List;Ljava/util/List;)V
+- name: WeightBalancedTreeMapTest#removeNullShouldReturnTheExactSameInstance
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeMapTest.removeNullShouldReturnTheExactSameInstance(Ljava/util/List;)V
+- name: WeightBalancedTreeMapTest#sizeShouldIncreaseWhenNewValuesAreAdded
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeMapTest.sizeShouldIncreaseWhenNewValuesAreAdded(Ljava/util/List;)V
+- name: WeightBalancedTreeMapTest#testContains
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeMapTest.testContains(Ljava/util/List;)V
+- name: WeightBalancedTreeTest#treeShouldAlwaysBeConsistent
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeTest.treeShouldAlwaysBeConsistent(Ljava/util/List;Ljava/util/List;)V
+- name: FingerTreeTest#accessingObjectWithIllegalIndexShouldYieldIndexOutOfBounds
+  entryPoint: se.plilja.imcollect.internal.fingertrees.FingerTreeTest.accessingObjectWithIllegalIndexShouldYieldIndexOutOfBounds(Ljava/util/List;)V
+- name: FingerTreeTest#getIndexOfShouldReturnValue
+  entryPoint: se.plilja.imcollect.internal.fingertrees.FingerTreeTest.getIndexOfShouldReturnValue(Ljava/util/List;)V
+- name: FingerTreeTest#getLastIndexOfVsIndexOf
+  entryPoint: se.plilja.imcollect.internal.fingertrees.FingerTreeTest.getLastIndexOfVsIndexOf(Ljava/util/List;)V
+- name: FingerTreeTest#indexOfShouldReturnMinusOneForNonExistingValue
+  entryPoint: se.plilja.imcollect.internal.fingertrees.FingerTreeTest.indexOfShouldReturnMinusOneForNonExistingValue(Ljava/util/List;Ljava/lang/Integer;)V
+- name: FingerTreeTest#setFollowedByGetShouldYieldSetValue
+  entryPoint: se.plilja.imcollect.internal.fingertrees.FingerTreeTest.setFollowedByGetShouldYieldSetValue(II)V
+- name: FingerTreeTest#toMutableCollectionShouldReturnObjectEqualToArrayList
+  entryPoint: se.plilja.imcollect.internal.fingertrees.FingerTreeTest.toMutableCollectionShouldReturnObjectEqualToArrayList(Ljava/util/ArrayList;)V
+- name: WeightBalancedTreeMapTest#putAllFromMutableMap
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeMapTest.putAllFromMutableMap(Ljava/util/List;Ljava/util/List;)V
+- name: WeightBalancedTreeMapTest#removedValuesShouldNotBePresent
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeMapTest.removedValuesShouldNotBePresent(Ljava/util/List;Ljava/util/List;)V
+- name: WeightBalancedTreeSetTest#allAddedValueShouldBePresentInCollection
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeSetTest.allAddedValueShouldBePresentInCollection(Ljava/util/List;Ljava/util/List;)V
+- name: WeightBalancedTreeSetTest#anAddedValueShouldBePresentInCollection
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeSetTest.anAddedValueShouldBePresentInCollection(Ljava/util/List;I)V
+- name: WeightBalancedTreeSetTest#emptyShouldAlwaysBeFalseAfterAdd
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeSetTest.emptyShouldAlwaysBeFalseAfterAdd(I)V
+- name: WeightBalancedTreeSetTest#nullShouldNeverBePresent
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeSetTest.nullShouldNeverBePresent(Ljava/util/List;)V
+- name: WeightBalancedTreeSetTest#removeAllShouldRemoveAllElements
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeSetTest.removeAllShouldRemoveAllElements(Ljava/util/List;Ljava/util/List;)V
+- name: WeightBalancedTreeSetTest#removeExistingElementShouldDecreaseSize1
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeSetTest.removeExistingElementShouldDecreaseSize1(Ljava/util/List;)V
+- name: WeightBalancedTreeSetTest#removeExistingElementShouldDecreaseSize
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeSetTest.removeExistingElementShouldDecreaseSize(Ljava/util/List;I)V
+- name: WeightBalancedTreeSetTest#removeNonExistingElementShouldNotChangeSize
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeSetTest.removeNonExistingElementShouldNotChangeSize(Ljava/util/List;I)V
+- name: WeightBalancedTreeSetTest#removingNullShouldReturnTheExactSameInstance
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeSetTest.removingNullShouldReturnTheExactSameInstance(Ljava/util/List;)V
+- name: WeightBalancedTreeSetTest#retainAll
+  entryPoint: se.plilja.imcollect.internal.WeightBalancedTreeSetTest.retainAll(Ljava/util/List;Ljava/util/List;)V
+- name: FingerTreeTest#allAddedValueShouldBePresentInCollection
+  entryPoint: se.plilja.imcollect.internal.fingertrees.FingerTreeTest.allAddedValueShouldBePresentInCollection(Ljava/util/List;Ljava/util/List;)V
+- name: FingerTreeTest#anAddedValueShouldBePresentInCollection
+  entryPoint: se.plilja.imcollect.internal.fingertrees.FingerTreeTest.anAddedValueShouldBePresentInCollection(Ljava/util/List;I)V
+- name: FingerTreeTest#emptyShouldAlwaysBeFalseAfterAdd
+  entryPoint: se.plilja.imcollect.internal.fingertrees.FingerTreeTest.emptyShouldAlwaysBeFalseAfterAdd(I)V
+- name: FingerTreeTest#nullShouldNeverBePresent
+  entryPoint: se.plilja.imcollect.internal.fingertrees.FingerTreeTest.nullShouldNeverBePresent(Ljava/util/List;)V
+- name: FingerTreeTest#removeAllShouldRemoveAllElements
+  entryPoint: se.plilja.imcollect.internal.fingertrees.FingerTreeTest.removeAllShouldRemoveAllElements(Ljava/util/List;Ljava/util/List;)V
+- name: FingerTreeTest#removeExistingElementShouldDecreaseSize1
+  entryPoint: se.plilja.imcollect.internal.fingertrees.FingerTreeTest.removeExistingElementShouldDecreaseSize1(Ljava/util/List;)V
+- name: FingerTreeTest#removeExistingElementShouldDecreaseSize
+  entryPoint: se.plilja.imcollect.internal.fingertrees.FingerTreeTest.removeExistingElementShouldDecreaseSize(Ljava/util/List;I)V
+- name: FingerTreeTest#removeNonExistingElementShouldNotChangeSize
+  entryPoint: se.plilja.imcollect.internal.fingertrees.FingerTreeTest.removeNonExistingElementShouldNotChangeSize(Ljava/util/List;I)V
+- name: FingerTreeTest#removingNullShouldReturnTheExactSameInstance
+  entryPoint: se.plilja.imcollect.internal.fingertrees.FingerTreeTest.removingNullShouldReturnTheExactSameInstance(Ljava/util/List;)V
+- name: FingerTreeTest#retainAll
+  entryPoint: se.plilja.imcollect.internal.fingertrees.FingerTreeTest.retainAll(Ljava/util/List;Ljava/util/List;)V
